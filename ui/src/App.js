@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import Blog from './components/Blog';
+import CMS from "./components/CMS";
 
 const theme = createMuiTheme({
   palette: {
@@ -26,12 +27,9 @@ function App() {
 			<div>
         <ThemeProvider theme={theme}>
 				  <Switch>
-					{/* <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/users">
-            <Users />
-          </Route> */}
+					<Route path='/cms'>
+						<CMS />
+					</Route>
 					<Route exact path='/'>
 						<Blog />
 					</Route>
