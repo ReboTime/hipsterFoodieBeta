@@ -2,11 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Typography, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import BlogPost from './blogComponents/BlogPost';
+import { makeStyles } from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles((theme) => ({
+    fixInCorner: {
+        position: 'fixed',
+        top: '10px',
+        right: '10px'
+    },
+    typo: {
+        paddingTop: '25px'
+    }
+}));
 
 export default function Blog() {
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
-	const [articles, setArticles] = useState([]);
+    const [articles, setArticles] = useState([]);
+    
+    const classes = useStyles();
 
 	// Note: the empty deps array [] means
 	// this useEffect will run once
@@ -18,7 +33,6 @@ export default function Blog() {
 				(result) => {
 					setIsLoaded(true);
 					setArticles(result.articles);
-					console.log(result.articles);
 				},
 				// Note: it's important to handle errors here
 				// instead of a catch() block so that we don't swallow
@@ -37,17 +51,17 @@ export default function Blog() {
 
 	return (
 		<div>
-			<IconButton aria-label='' onClick={handleClick}>
-				<SearchIcon fontSize='small' />
+			<IconButton variant='outlined' onClick={handleClick} className={classes.fixInCorner} color='primary'>
+				<SearchIcon fontSize='large' />
 			</IconButton>
 			<Grid container spacing={3} align='center'>
 				<Grid item xs={12}>
-					<Typography variant='h4' color='initial' align='center'>
+					<Typography variant='h4' color='initial' align='center' className={classes.typo}>
 						Hipster Foodie Beta
 					</Typography>
 				</Grid>
 				{articles.map((article) => (
-					<Grid item xs={12} key={article.id}>
+					<Grid item xs={12} md={6} lg={3} key={article.id}>
 						<BlogPost article={article}/>
 					</Grid>
 				))}
