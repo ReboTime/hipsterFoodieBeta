@@ -1,0 +1,35 @@
+{
+	"articles": [{
+		"id": 1,
+        "title": "meat busters",
+        "date": "2014-02-01T09:28:56.321-10:00",
+		"url": "meat-busters",
+		"img": ["./img/pic1.jpg", "./img/pic1.jpg"],
+		"tldr": "it was delcious. must go!",
+		"location": "-23, 23",
+		"ratings": {
+			"star": 4,
+			"price": 4,
+			"drinks": 3,
+			"food": 4.5
+		},
+		"desc": "we went to have a beer and a steak and blah blah blah lorem ipsum lasadnja dfg dsg sdfg sdf gsdf   sdfgsdfg sdf gsd fgs dfg sdfgsdf g sdfg sdf7",
+		"published": true
+	},{
+		"id": 2,
+		"title": "kebab busters",
+        "date": "2014-02-01T09:28:56.321-10:00",
+		"url": "kebab-busters",
+		"img": ["./img/pic1.jpg", "./img/pic1.jpg"],
+		"tldr": "it was delcious. must go!",
+		"location": "-23, 23",
+		"ratings": {
+			"star": 4,
+			"price": 4,
+			"drinks": 3,
+			"food": 4.5
+		},
+		"desc": "we went to have a beer and a steak and blah blah blah lorem ipsum lasadnja dfg dsg sdfg sdf gsdf   sdfgsdfg sdf gsd fgs dfg sdfgsdf g sdfg sdf7",
+		"published": true
+	}]
+}
