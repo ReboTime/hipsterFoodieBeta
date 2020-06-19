@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import Cookies from 'cookies-js';
 import Grid from "@material-ui/core/Grid";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
@@ -25,13 +26,33 @@ export default function BlogPostEditor() {
 
     function changeArticle(event) {
         let id = +event.currentTarget.value;
-        console.log(id);
         if (id === 0) {
             setArticleData(newPost);
         } else {
             setArticleData(articles.filter(a => a.id === id)[0]);
         }
         setArticle(id + "");
+    }
+
+    function updateArticle() {
+        const opt = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' , session: Cookies.get('hfbSession') },
+            crossDomain: true,
+            body: JSON.stringify(articleData)
+        }
+        fetch('http://localhost:3001/article', opt)
+            .then(res => res.json())
+            .then(data => {
+                let newArticles = articles;
+                if (+article === 0) {
+                    newArticles.push(data);
+                } else {
+                    newArticles = newArticles.map(a => a.id === +article ? data : a);
+                }
+                setArticles(newArticles);
+                setArticle(data.id);
+            });
     }
 
     return <Grid container direction={"column"} justify={"center"} style={{ textAlign: "center" }}>
@@ -51,11 +72,9 @@ export default function BlogPostEditor() {
                 label="Title"
                 value={articleData.title}
                 onChange={event => {
-                    let data = articleData;
-                    data.title = event.currentTarget.value;
-                    console.log(data);
-                    setArticleData(data);
+                    setArticleData({...articleData, title: event.currentTarget.value} );
                 }}
+                onBlur={updateArticle}
             />
         </Grid>
 

@@ -6,16 +6,17 @@ let articlesFile = '../ui/public/articles.json';
 
 function writeArticles(json) {
     fs.unlink(articlesFile, function (err) {
-        console.log(err);
-    });
-    fs.appendFile(articlesFile, JSON.stringify(json), function(err) {
         if (err) return console.log(err);
-        console.log("File was updated!");
+        fs.appendFile(articlesFile, JSON.stringify(json), function(err) {
+            if (err) return console.log(err);
+            console.log("File was updated!");
+        });
     });
+
 }
 
 router.post('/', function(req, res) {
-    let session = req.cookies.hfbSession;
+    let session = req.get('session');
     if (session !== global.sessionCookie) {
         res.send({error: 'Unauthorized'});
         return;
@@ -28,19 +29,19 @@ router.post('/', function(req, res) {
             article.id = 1;
             json.articles.push(article);
             writeArticles(json);
+            res.send(article);
             return;
         }
         json = JSON.parse(data);
-        if (article.id === null) {
+        if (article.id === null || article.id === 0) {
             article.id = json.articles.length + 1;
             json.articles.push(article);
         } else {
             json.articles = json.articles.map(a => a.id === article.id ? article : a);
         }
         writeArticles(json);
-        console.log(json);
+        res.send(article);
     });
-    res.send(article);
 });
 
 module.exports = router;
