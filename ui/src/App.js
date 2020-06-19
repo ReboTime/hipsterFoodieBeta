@@ -2,11 +2,13 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Blog from './components/Blog';
+import Article from './components/Article';
 
 const theme = createMuiTheme({
-  palette: {
+	palette: {
 		// primary: {
 		// 	main: '#4ecc6f',
 		// },
@@ -15,7 +17,6 @@ const theme = createMuiTheme({
 		// },
 		background: {
 			default: '#fff',
-
 		},
 	},
 });
@@ -24,19 +25,20 @@ function App() {
 	return (
 		<Router>
 			<div>
-        <ThemeProvider theme={theme}>
-				  <Switch>
-					{/* <Route path="/about">
+				<ThemeProvider theme={theme}>
+        <CssBaseline />
+					<Switch>
+						{/* <Route path="/about">
             <About />
-          </Route>
-          <Route path="/users">
-            <Users />
           </Route> */}
-					<Route exact path='/'>
-						<Blog />
-					</Route>
-				  </Switch>
-        </ThemeProvider>
+						<Route path='/:url'>
+							<Article />
+						</Route>
+						<Route exact path='/'>
+							<Blog />
+						</Route>
+					</Switch>
+				</ThemeProvider>
 			</div>
 		</Router>
 	);

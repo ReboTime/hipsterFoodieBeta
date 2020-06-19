@@ -3,6 +3,7 @@ import { Grid, Typography, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import BlogPost from './blogComponents/BlogPost';
 import { makeStyles } from '@material-ui/core/styles';
+import Title from './blogComponents/Title'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -56,9 +57,7 @@ export default function Blog() {
 			</IconButton>
 			<Grid container spacing={3} align='center'>
 				<Grid item xs={12}>
-					<Typography variant='h4' color='initial' align='center' className={classes.typo}>
-						Hipster Foodie Beta
-					</Typography>
+                    <Title />
 				</Grid>
 				{articles.map((article) => (
 					<Grid item xs={12} md={6} lg={3} key={article.id}>
