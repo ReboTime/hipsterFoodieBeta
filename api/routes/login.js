@@ -4,10 +4,11 @@ let bcrypt = require('bcrypt');
 let router = express.Router();
 global.sessionCookie = 'initCookie';
 global.password = 'init';
+
 bcrypt.hash("myCMSPassw0rd", 10, function(err, hash) {
-    password = hash;
+    global.password = hash;
 });
-router.get('/', function(req, res) {
+router.post('/', function(req, res) {
     let json = req.body;
     if (json.user === "admin" && json.password !== null) {
         bcrypt.compare(json.password, password, function(err, result) {
@@ -21,6 +22,16 @@ router.get('/', function(req, res) {
     } else {
         res.send({ error: "Unauthorized" });
     }
-});
+})
+
+router.post('/cookie', function (req, res) {
+    setTimeout(() => {
+        if (req.body !== undefined && req.body.cookie === global.sessionCookie) {
+            res.send({valid: true});
+        } else {
+            res.send({valid: false});
+        }
+    }, 1000);
+})
 
 module.exports = router;

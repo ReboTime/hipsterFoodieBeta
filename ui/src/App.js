@@ -6,6 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Blog from './components/Blog';
 import Article from './components/Article';
+import CMS from './components/CMS';
 
 const theme = createMuiTheme({
 	palette: {
@@ -26,11 +27,11 @@ function App() {
 		<Router>
 			<div>
 				<ThemeProvider theme={theme}>
-        <CssBaseline />
+					<CssBaseline />
 					<Switch>
-						{/* <Route path="/about">
-            <About />
-          </Route> */}
+						<Route path='/cms'>
+							<CMS />
+						</Route>
 						<Route path='/:url'>
 							<Article />
 						</Route>
