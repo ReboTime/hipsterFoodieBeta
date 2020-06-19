@@ -22,10 +22,11 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 
 import { Rating, Pagination } from '@material-ui/lab';
 import SwipeableViews from 'react-swipeable-views';
-import RatingIcons from './RatingIcons'
+import { FacebookShareButton } from 'react-share';
+import RatingIcons from './RatingIcons';
 
 const useStyles = makeStyles((theme) => ({
-		root: {
+	root: {
 		maxWidth: '95%',
 		background:
 			'linear-gradient(49deg, rgba(241,250,149,0.5) 0%, rgba(255,246,217,0.5) 36%, rgba(255,255,255,1) 100%)',
@@ -84,6 +85,7 @@ export default function BlogPost(props) {
 		setExpanded(!expanded);
 	};
 
+  const BLOG_URL='http://localhost:3000/';
 	return (
 		<Card className={classes.root} variant='elevation' elevation={10}>
 			<CardHeader
@@ -129,17 +131,21 @@ export default function BlogPost(props) {
 							<RoomTwoToneIcon fontSize='large' />
 						</IconButton>
 					</Grid>
-          {/* RATINGS COMPONENT */}
-          <RatingIcons ratings={props.article.ratings}/>
+					{/* RATINGS COMPONENT */}
+					<RatingIcons ratings={props.article.ratings} />
 				</Grid>
 			</CardContent>
 
 			<CardActions disableSpacing>
-        {/* "SHARE ON" LINKS TO FACEBOOK, INSTAGRAM ETC */}
+				{/* "SHARE ON" LINKS TO FACEBOOK, INSTAGRAM ETC */}
 				<Typography variant='body2'>Share on</Typography>
-				<IconButton aria-label='add to favorites'>
-					<FacebookIcon />
-				</IconButton>
+        {/* !! TO DO  -> REMOVE BELOW TERNARY EXPRESSION FOR DEPLOYMENT AND CHANGE BLOG_URL TO PROPER VALUE */}
+				<FacebookShareButton url={true ? 'http://www.google.com/' : BLOG_URL + '/' +  props.article.url}>
+					<IconButton>
+						<FacebookIcon />
+					</IconButton>
+				</FacebookShareButton>
+
 				<IconButton aria-label='share'>
 					<InstagramIcon />
 				</IconButton>
