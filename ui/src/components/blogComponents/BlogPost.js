@@ -17,8 +17,10 @@ import { red } from '@material-ui/core/colors';
 // ICON IMPORTS
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import InstagramIcon from '@material-ui/icons/Instagram';
+// import FacebookIcon from '@material-ui/icons/Facebook';
+import { FacebookIcon } from 'react-share';
+import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyTwoTone';
+import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 
 import { Rating, Pagination } from '@material-ui/lab';
 import SwipeableViews from 'react-swipeable-views';
@@ -54,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
 	ul: {
 		justifyContent: 'center',
 	},
+	facebookButton: {
+		display: 'flex',
+		margin: '0px 6px',
+	},
 }));
 
 export default function BlogPost(props) {
@@ -62,6 +68,9 @@ export default function BlogPost(props) {
 	const [date, setDate] = useState();
 	const [index, setIndex] = useState(0);
 	const [googleLink, setGoogleLink] = useState('https://www.google.com/maps/search/');
+
+	const BLOG_URL = 'http://localhost:3000';
+	const formattedUrl = `${BLOG_URL}/${props.article.url}`;
 
 	useEffect(() => {
 		// FORMAT DATE FOR DISPLAY
@@ -85,7 +94,16 @@ export default function BlogPost(props) {
 		setExpanded(!expanded);
 	};
 
-  const BLOG_URL='http://localhost:3000/';
+	const handleCopyLinkClick = (e) => {
+		const el = document.createElement('textarea');
+		el.value = formattedUrl;
+		document.body.appendChild(el);
+		el.select();
+		el.setSelectionRange(0, 99999); /*For mobile devices*/
+		document.execCommand('copy');
+		document.body.removeChild(el);
+	};
+
 	return (
 		<Card className={classes.root} variant='elevation' elevation={10}>
 			<CardHeader
@@ -137,17 +155,17 @@ export default function BlogPost(props) {
 			</CardContent>
 
 			<CardActions disableSpacing>
-				{/* "SHARE ON" LINKS TO FACEBOOK, INSTAGRAM ETC */}
-				<Typography variant='body2'>Share on</Typography>
-        {/* !! TO DO  -> REMOVE BELOW TERNARY EXPRESSION FOR DEPLOYMENT AND CHANGE BLOG_URL TO PROPER VALUE */}
-				<FacebookShareButton url={true ? 'http://www.google.com/' : BLOG_URL + '/' +  props.article.url}>
-					<IconButton>
-						<FacebookIcon />
-					</IconButton>
+				{/* "SHARE ON" LINKS TO FACEBOOK, OR COPY TEXT TO CLIPBOARD */}
+				<Typography variant='body2'>Share</Typography>
+				{/* !! TO DO  -> REMOVE BELOW TERNARY EXPRESSION FOR DEPLOYMENT AND CHANGE BLOG_URL TO PROPER VALUE */}
+				<FacebookShareButton
+					className={classes.facebookButton}
+					url={true ? 'http://www.google.com/' : formattedUrl}>
+					<FacebookIcon size={25} borderRadius={8}/>
 				</FacebookShareButton>
-
-				<IconButton aria-label='share'>
-					<InstagramIcon />
+				<Typography variant='body2'>Copy link</Typography>
+				<IconButton onClick={handleCopyLinkClick}>
+					<FileCopyTwoToneIcon />
 				</IconButton>
 				<Typography variant='body2' className={classes.pushToRight}>
 					Read more:
@@ -159,7 +177,7 @@ export default function BlogPost(props) {
 					onClick={handleExpandClick}
 					aria-expanded={expanded}
 					aria-label='show more'>
-					<FavoriteIcon />
+					<ExpandMoreTwoToneIcon />
 				</IconButton>
 			</CardActions>
 			<Collapse in={expanded} timeout='auto' unmountOnExit>

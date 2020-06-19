@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Title from './blogComponents/Title';
 import BlogPost from './blogComponents/BlogPost';
-import { Button, Link, Typography } from '@material-ui/core';
+import { Button, Grid, Link, Typography } from '@material-ui/core';
 // import { Link } from 'react-router-dom';
 // import Link from '@material-ui/core/Link';
 
@@ -33,12 +33,18 @@ export default function Article() {
 	});
 	let blogpost = article ? <BlogPost article={article} /> : '';
 	return (
-		<div>
-			<Title />
-			{blogpost}
-			<Button variant='contained'>
-				<Link href='/'>GO HOME!</Link>
-			</Button>
-		</div>
+		<Grid container spacing={3} align='center'>
+			<Grid item xs={12}>
+				<Title />
+			</Grid>
+			<Grid item xs={12}>
+				{blogpost}
+			</Grid>
+			<Grid item xs={12}>
+				<Button variant='contained'>
+					<Link href='/'>GO HOME!</Link>
+				</Button>
+			</Grid>
+		</Grid>
 	);
 }
