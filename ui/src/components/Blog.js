@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, IconButton } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import BlogPost from './blogComponents/BlogPost';
 import { makeStyles } from '@material-ui/core/styles';
@@ -45,14 +45,14 @@ export default function Blog() {
 			);
 	}, []);
 
-	function handleClick(e) {
+	function handleSearchClick(e) {
 		e.preventDefault();
-		console.log('The link was clicked.');
+		console.log('Search was clicked.');
 	}
 
 	return (
 		<div>
-			<IconButton variant='outlined' onClick={handleClick} className={classes.fixInCorner} color='primary'>
+			<IconButton variant='outlined' onClick={handleSearchClick} className={classes.fixInCorner} color='primary'>
 				<SearchIcon fontSize='large' />
 			</IconButton>
 			<Grid container spacing={3} align='center'>
@@ -60,11 +60,14 @@ export default function Blog() {
                     <Title />
 				</Grid>
 				{articles.map((article) => {
-                if (article.published) return (
-					<Grid item xs={12} md={6} lg={3} key={article.id}>
-						<BlogPost article={article}/>
-					</Grid>
-				)})}
+                    if (article.published) return (
+                        <Grid item xs={12} md={6} lg={3} key={article.id}>
+                            <BlogPost article={article}/>
+                        </Grid>
+                    )   
+                    // EMPTY RETURN RESULTS IN ERROR. PLACING EMPTY DIV WITH UNPUBLISHED ARTICLE NAME
+                    return (<div id={article.title} className='unpublished' key={article.id}></div>)
+                })}
 			</Grid>
 		</div>
 	);

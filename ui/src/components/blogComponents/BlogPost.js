@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import {
@@ -22,7 +22,9 @@ import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 import { FacebookShareButton } from 'react-share';
 import RatingIcons from './RatingIcons';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
-import { Carousel } from 'react-responsive-carousel';
+import AwesomeSlider from 'react-awesome-slider';
+import 'react-awesome-slider/dist/styles.css';
+import './BlogPost.css';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -68,15 +70,12 @@ const useStyles = makeStyles((theme) => ({
 export default function BlogPost(props) {
 	const classes = useStyles();
 	const [expanded, setExpanded] = useState(false);
-	const [date, setDate] = useState();
-	const [index, setIndex] = useState(0);
-	const [googleLink, setGoogleLink] = useState('https://www.google.com/maps/search/');
 
 	const BLOG_URL = 'http://localhost:3000';
 	const formattedUrl = `${BLOG_URL}/${props.article.url}`;
-
-	useEffect(() => {
-		// FORMAT DATE FOR DISPLAY
+  
+  // FORMAT DATE FOR DISPLAY
+	function formatDate() {
 		const date = new Date(props.article.date);
 		const formattedDate =
 			'Visited ' +
@@ -86,12 +85,13 @@ export default function BlogPost(props) {
 			'-' +
 			('0' + date.getDate()).slice(-2);
 
-		setDate(formattedDate);
-		// FORMAT GOOGLE LINK FOR MAP BUTTON
-		setGoogleLink(
-			`https://www.google.com/maps/search/?api=1&query=${props.article.location}&query_place_id=${props.article.googlePlaceId}`,
-		);
-	}, [props.article.date]);
+		return formattedDate;
+	}
+
+	// FORMAT GOOGLE LINK FOR MAP BUTTON
+	function formatGoogleLink() {
+		return `https://www.google.com/maps/search/?api=1&query=${props.article.location}&query_place_id=${props.article.googlePlaceId}`;
+	}
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
@@ -107,27 +107,22 @@ export default function BlogPost(props) {
 		document.body.removeChild(el);
 	};
 
-  console.log('img type:', typeof props.article.img)
 	return (
 		<Card className={classes.root} variant='elevation' elevation={10}>
 			<CardHeader
 				title={<Typography variant='h5'>{props.article.title}</Typography>}
-				subheader={date}
+				subheader={formatDate()}
 			/>
 			{/* IMAGE CAROUSEL */}
-			<Carousel showStatus={false} infiniteLoop={true} showThumbs={false} showArrows={false}>
+			<AwesomeSlider className='aws-btn' bullets={false}>
 				{props.article.img.length > 0 ? (
 					props.article.img.map((link, arrayIndex) => (
-						<div key={arrayIndex}>
-							<img src={link} />
-						</div>
+						<div key={arrayIndex} data-src={link}></div>
 					))
 				) : (
-					<div>
-						<img src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg' />
-					</div>
+					<div data-src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg'></div>
 				)}
-			</Carousel>
+			</AwesomeSlider>
 			<CardContent>
 				<Grid container alignItems='center'>
 					<Grid item xs={8}>
@@ -147,7 +142,7 @@ export default function BlogPost(props) {
 						</Typography>
 					</Grid>
 					<Grid item xs={2}>
-						<IconButton component='a' href={googleLink} target='_blank'>
+						<IconButton component='a' href={formatGoogleLink()} target='_blank'>
 							<RoomTwoToneIcon fontSize='large' />
 						</IconButton>
 					</Grid>
