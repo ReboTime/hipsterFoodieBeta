@@ -28,6 +28,12 @@
   color: #61dafb;
 }
 
+.MuiDialog-paper {
+  height: 95%!important;
+  width: 95%!important;
+  max-width: 95%!important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

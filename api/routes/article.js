@@ -2,7 +2,8 @@ let express = require('express');
 let fs = require('fs');
 let router = express.Router();
 let articlesFile = '../ui/public/articles.json';
-
+let imageDir = '../ui/public/images/';
+let rimraf = require('rimraf');
 
 function writeArticles(json) {
     fs.unlink(articlesFile, function (err) {
@@ -41,6 +42,38 @@ router.post('/', function(req, res) {
         }
         writeArticles(json);
         res.send(json);
+    });
+});
+
+router.post('/addImage', function(req, res) {
+    let session = req.get('session');
+    if (session !== global.sessionCookie) {
+        res.send({error: 'Unauthorized'});
+        return;
+    }
+    let imageData = req.body;
+    let fileName = req.get('fileName');
+    let articleId = req.get('articleId');
+    if (!fs.existsSync(imageDir + articleId)) {
+        fs.mkdirSync(imageDir + articleId);
+    }
+    saveImage(imageDir + articleId + '/' + fileName, imageData.data);
+    res.send({ result: "OK"});
+});
+
+function saveImage(file, data) {
+    fs.writeFile(file,  Buffer.from(data.replace(/.*base64,/,""), "base64"), 'utf8', () => {});
+}
+
+router.post('/clearImages', function (req, res) {
+    let session = req.get('session');
+    if (session !== global.sessionCookie) {
+        res.send({error: 'Unauthorized'});
+        return;
+    }
+    let articleId = req.get('articleId');
+    rimraf(imageDir + articleId, () => {
+        res.send({ result: "OK"});
     });
 });
 
