@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, IconButton, Typography } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
 import SearchBlog from './blogComponents/SearchBlog';
+import CloseIcon from '@material-ui/icons/Close';
 
 export default function Blog() {
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [articles, setArticles] = useState([]);
 	const [searchInput, setSearchInput] = useState('');
+
+	function handleSearchInputChange(value) {
+        setSearchInput(value);
+    }
 
 	// Note: the empty deps array [] means
 	// this useEffect will run once
@@ -31,32 +36,32 @@ export default function Blog() {
 			);
 	}, []);
 
-	function handleSearchInputChange(event) {
-		setSearchInput(event.target.value);
-		console.log('searchinput:', searchInput);
-	}
-
 	const searchTitle = (
 		<Grid item xs={12}>
-			<Typography>Search results for '{searchInput}'</Typography>
+			<Typography>
+				Search results for '{searchInput}'
+				<IconButton onClick={() => { handleSearchInputChange('') }}>
+					<CloseIcon fontSize='small' />
+				</IconButton>
+			</Typography>
 		</Grid>
 	);
 
 	let articlesToDisplay = articles;
-	if (searchInput.length > 3)
+	if (searchInput.length > 3) {
 		articlesToDisplay = articles.filter((article) => {
-			if (JSON.stringify(article).match(searchInput) !== null) return true;
+			if (JSON.stringify(article).toLowerCase().match(searchInput.toLowerCase()) !== null) return true;
 			return false;
 		});
-
+	}
 	return (
 		<div>
-			<SearchBlog handleSearchInputChange={handleSearchInputChange} />
+			<SearchBlog searchInput={searchInput} handleSearchInputChange={handleSearchInputChange}/>
 			<Grid container spacing={3} align='center'>
 				<Grid item xs={12}>
 					<Title />
 				</Grid>
-                {searchInput.length > 3 ? searchTitle : <div></div>}
+				{searchInput.length > 3 ? searchTitle : <div></div>}
 				{articlesToDisplay.map((article) => {
 					if (article.published)
 						return (
