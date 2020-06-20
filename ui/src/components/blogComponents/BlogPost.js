@@ -14,14 +14,12 @@ import {
 import { red } from '@material-ui/core/colors';
 // ICON IMPORTS
 import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
-// import FacebookIcon from '@material-ui/icons/Facebook';
 import { FacebookIcon } from 'react-share';
 import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyTwoTone';
 import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 
 import { FacebookShareButton } from 'react-share';
 import RatingIcons from './RatingIcons';
-import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import AwesomeSlider from 'react-awesome-slider';
 import 'react-awesome-slider/dist/styles.css';
 import './BlogPost.css';

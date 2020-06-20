@@ -1,28 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, IconButton } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { Grid, Typography } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
-import { makeStyles } from '@material-ui/core/styles';
-import Title from './blogComponents/Title'
-
-
-const useStyles = makeStyles((theme) => ({
-    fixInCorner: {
-        position: 'fixed',
-        top: '10px',
-        right: '10px'
-    },
-    typo: {
-        paddingTop: '25px'
-    }
-}));
+import Title from './blogComponents/Title';
+import SearchBlog from './blogComponents/SearchBlog';
 
 export default function Blog() {
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
-    const [articles, setArticles] = useState([]);
-    
-    const classes = useStyles();
+	const [articles, setArticles] = useState([]);
+	const [searchInput, setSearchInput] = useState('');
 
 	// Note: the empty deps array [] means
 	// this useEffect will run once
@@ -45,29 +31,42 @@ export default function Blog() {
 			);
 	}, []);
 
-	function handleSearchClick(e) {
-		e.preventDefault();
-		console.log('Search was clicked.');
+	function handleSearchInputChange(event) {
+		setSearchInput(event.target.value);
+		console.log('searchinput:', searchInput);
 	}
+
+	const searchTitle = (
+		<Grid item xs={12}>
+			<Typography>Search results for '{searchInput}'</Typography>
+		</Grid>
+	);
+
+	let articlesToDisplay = articles;
+	if (searchInput.length > 3)
+		articlesToDisplay = articles.filter((article) => {
+			if (JSON.stringify(article).match(searchInput) !== null) return true;
+			return false;
+		});
 
 	return (
 		<div>
-			<IconButton variant='outlined' onClick={handleSearchClick} className={classes.fixInCorner} color='primary'>
-				<SearchIcon fontSize='large' />
-			</IconButton>
+			<SearchBlog handleSearchInputChange={handleSearchInputChange} />
 			<Grid container spacing={3} align='center'>
 				<Grid item xs={12}>
-                    <Title />
+					<Title />
 				</Grid>
-				{articles.map((article) => {
-                    if (article.published) return (
-                        <Grid item xs={12} md={6} lg={3} key={article.id}>
-                            <BlogPost article={article}/>
-                        </Grid>
-                    )   
-                    // EMPTY RETURN RESULTS IN ERROR. PLACING EMPTY DIV WITH UNPUBLISHED ARTICLE NAME
-                    return (<div id={article.title} className='unpublished' key={article.id}></div>)
-                })}
+                {searchInput.length > 3 ? searchTitle : <div></div>}
+				{articlesToDisplay.map((article) => {
+					if (article.published)
+						return (
+							<Grid item xs={12} md={6} lg={3} key={article.id}>
+								<BlogPost article={article} />
+							</Grid>
+						);
+					// EMPTY RETURN RESULTS IN ERROR. PLACING EMPTY DIV WITH UNPUBLISHED ARTICLE NAME
+					return <div id={article.title} className='unpublished' key={article.id}></div>;
+				})}
 			</Grid>
 		</div>
 	);
