@@ -14,17 +14,17 @@ import {
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 // ICON IMPORTS
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
 // import FacebookIcon from '@material-ui/icons/Facebook';
 import { FacebookIcon } from 'react-share';
 import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyTwoTone';
 import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 
-import { Rating, Pagination } from '@material-ui/lab';
-import SwipeableViews from 'react-swipeable-views';
+import { Pagination } from '@material-ui/lab';
 import { FacebookShareButton } from 'react-share';
 import RatingIcons from './RatingIcons';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	expand: {
 		transform: 'rotate(0deg)',
-		// marginLeft: 'auto',
 		transition: theme.transitions.create('transform', {
 			duration: theme.transitions.duration.shortest,
 		}),
@@ -58,6 +57,13 @@ const useStyles = makeStyles((theme) => ({
 	facebookButton: {
 		display: 'flex',
 		margin: '0px 6px',
+	},
+	carouselDiv: {
+		width: '100%',
+		paddingTop: '50%',
+		overflow: 'hidden',
+		backgroundSize: 'cover',
+		backgroundPosition: 'center',
 	},
 }));
 
@@ -109,13 +115,15 @@ export default function BlogPost(props) {
 				title={<Typography variant='h5'>{props.article.title}</Typography>}
 				subheader={date}
 			/>
-			<SwipeableViews enableMouseEvents index={index}>
+			{/* IMAGE CAROUSEL */}
+			<Carousel showStatus={false} infiniteLoop={true} showThumbs={false} showArrows={false}>
 				{props.article.img.map((link, arrayIndex) => (
-					<div key={arrayIndex}>
-						<CardMedia className={classes.media} image={link} title='Paella dish' />
-					</div>
+					<div
+            key={arrayIndex}>
+              <img src={link} style={{objectFit:'none', objectPosition:'center', height:'50%', width:'100%'}}/>
+            </div>
 				))}
-			</SwipeableViews>
+			</Carousel>
 			<Pagination
 				hideNextButton={true}
 				hidePrevButton={true}
@@ -149,7 +157,7 @@ export default function BlogPost(props) {
 						</IconButton>
 					</Grid>
 					{/* RATINGS COMPONENT */}
-					<RatingIcons ratings={props.article.ratings} readOnly={true}/>
+					<RatingIcons ratings={props.article.ratings} readOnly={true} />
 				</Grid>
 			</CardContent>
 
@@ -160,7 +168,7 @@ export default function BlogPost(props) {
 				<FacebookShareButton
 					className={classes.facebookButton}
 					url={true ? 'http://www.google.com/' : formattedUrl}>
-					<FacebookIcon size={25} borderRadius={8}/>
+					<FacebookIcon size={25} borderRadius={8} />
 				</FacebookShareButton>
 				<Typography variant='body2'>Copy link</Typography>
 				<IconButton onClick={handleCopyLinkClick}>

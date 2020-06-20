@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Title from './blogComponents/Title';
 import BlogPost from './blogComponents/BlogPost';
-import { Button, Grid, Link, Typography } from '@material-ui/core';
-// import { Link } from 'react-router-dom';
-// import Link from '@material-ui/core/Link';
+import { Button, Grid, Link } from '@material-ui/core';
 
 export default function Article() {
 	// We can use the `useParams` hook here to access
