@@ -1,8 +1,8 @@
 let express = require('express');
 let fs = require('fs');
 let router = express.Router();
-let articlesFile = '../ui/build/articles.json';
-let imageDir = '../ui/build/images/';
+let articlesFile = 'ui/build/articles.json';
+let imageDir = 'ui/build/images/';
 let rimraf = require('rimraf');
 
 function writeArticles(json) {

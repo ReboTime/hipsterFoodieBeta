@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/article', articleRouter);
 app.use('/login', loginRouter);
-app.use('/post/*', express.static('../ui/build/'));
-app.use('/cms', express.static('../ui/build/'));
-app.use('/', express.static('../ui/build/'));
+app.use('/post/*', express.static('ui/build/'));
+app.use('/cms', express.static('ui/build/'));
+app.use('/', express.static('ui/build/'));
 app.listen(process.env.PORT || 3000);
