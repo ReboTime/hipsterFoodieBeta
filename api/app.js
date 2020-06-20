@@ -19,4 +19,7 @@ app.use('/login', loginRouter);
 app.use('/post/*', express.static('ui/build/'));
 app.use('/cms', express.static('ui/build/'));
 app.use('/', express.static('ui/build/'));
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3000, () => {
+    console.log("Current path : " + process.cwd());
+    console.log("Port : " + process.env.PORT);
+});
