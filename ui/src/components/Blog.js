@@ -59,11 +59,12 @@ export default function Blog() {
 				<Grid item xs={12}>
                     <Title />
 				</Grid>
-				{articles.map((article) => (
+				{articles.map((article) => {
+                if (article.published) return (
 					<Grid item xs={12} md={6} lg={3} key={article.id}>
 						<BlogPost article={article}/>
 					</Grid>
-				))}
+				)})}
 			</Grid>
 		</div>
 	);

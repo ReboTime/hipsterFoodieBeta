@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import {
 	Card,
 	CardHeader,
-	CardMedia,
 	CardContent,
 	CardActions,
 	Collapse,
@@ -20,7 +19,6 @@ import { FacebookIcon } from 'react-share';
 import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyTwoTone';
 import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 
-import { Pagination } from '@material-ui/lab';
 import { FacebookShareButton } from 'react-share';
 import RatingIcons from './RatingIcons';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
@@ -109,6 +107,7 @@ export default function BlogPost(props) {
 		document.body.removeChild(el);
 	};
 
+  console.log('img type:', typeof props.article.img)
 	return (
 		<Card className={classes.root} variant='elevation' elevation={10}>
 			<CardHeader
@@ -117,22 +116,18 @@ export default function BlogPost(props) {
 			/>
 			{/* IMAGE CAROUSEL */}
 			<Carousel showStatus={false} infiniteLoop={true} showThumbs={false} showArrows={false}>
-				{props.article.img.map((link, arrayIndex) => (
-					<div
-            key={arrayIndex}>
-              <img src={link} style={{objectFit:'none', objectPosition:'center', height:'50%', width:'100%'}}/>
-            </div>
-				))}
+				{props.article.img.length > 0 ? (
+					props.article.img.map((link, arrayIndex) => (
+						<div key={arrayIndex}>
+							<img src={link} />
+						</div>
+					))
+				) : (
+					<div>
+						<img src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg' />
+					</div>
+				)}
 			</Carousel>
-			<Pagination
-				hideNextButton={true}
-				hidePrevButton={true}
-				variant='outlined'
-				classes={{ ul: classes.ul }}
-				count={props.article.img.length}
-				onChange={(event, page) => setIndex(page - 1)}
-				style={{ paddingTop: '10px', padding: '0px auto' }}
-			/>
 			<CardContent>
 				<Grid container alignItems='center'>
 					<Grid item xs={8}>
