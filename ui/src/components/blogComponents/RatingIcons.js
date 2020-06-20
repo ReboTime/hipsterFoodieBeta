@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
@@ -7,7 +7,7 @@ import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutline
 import RestaurantMenuIcon from '@material-ui/icons/RestaurantMenu';
 import LocalBarIcon from '@material-ui/icons/LocalBar';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	star: {
 		color: '#fcec03',
 	},
@@ -32,27 +32,38 @@ const ratingIcons = [
 		component: <MonetizationOnOutlinedIcon />,
 	},
 	{
-		name: 'drinks',
+		name: 'food',
 		component: <RestaurantMenuIcon />,
 	},
 	{
-		name: 'food',
+		name: 'drinks',
 		component: <LocalBarIcon />,
 	},
 ];
 
 export default function RatingIcons(props) {
     const classes = useStyles();
+    const [ratings, setRatings] = useState(props.ratings);
+
+    useEffect(() => {
+    	setRatings(props.ratings);
+	}, [props.ratings])
+
+	function updateRating(icon, value) {
+		props.updateRating(icon, value);
+	}
 	return (
 		<Grid item xs={12} alignItems='center' justify='center' container>
 			{ratingIcons.map((icon) => (
 				<Grid item xs={6} md={3} key={icon.name}>
 					<Rating
+						data-icon={icon.name}
 						classes={{ iconFilled: classes[icon.name] }}
-						name='stars'
+						name={icon.name}
 						max={5}
-						readOnly={true}
-						defaultValue={props.ratings[icon.name]}
+						readOnly={props.readOnly}
+						value={ratings[icon.name]}
+						onChange={event => updateRating(event.currentTarget.name, +event.currentTarget.value)}
 						precision={0.5}
 						icon={icon.component}
 					/>

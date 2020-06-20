@@ -40,7 +40,7 @@ router.post('/', function(req, res) {
             json.articles = json.articles.map(a => a.id === article.id ? article : a);
         }
         writeArticles(json);
-        res.send(article);
+        res.send(json);
     });
 });
 

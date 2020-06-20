@@ -10,7 +10,6 @@ import {
 	Collapse,
 	Grid,
 	IconButton,
-	Link,
 	Typography,
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
@@ -150,7 +149,7 @@ export default function BlogPost(props) {
 						</IconButton>
 					</Grid>
 					{/* RATINGS COMPONENT */}
-					<RatingIcons ratings={props.article.ratings} />
+					<RatingIcons ratings={props.article.ratings} readOnly={true}/>
 				</Grid>
 			</CardContent>
 

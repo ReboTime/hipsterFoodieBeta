@@ -35,5 +35,5 @@ export default function CMS() {
 
     }
 
-    return loading ? <CircularProgress size="20%" thickness={1} style={{ position: "absolute", top: '30%', left: '40%'}} /> : session !== undefined ? <BlogPostEditor /> : <Login setSession={setSession}/>;
+    return loading ? <CircularProgress size="50px" thickness={1} style={{ position: "absolute", top: '30%', left: '48%'}} /> : session !== undefined ? <BlogPostEditor /> : <Login setSession={setSession}/>;
 }

@@ -1,14 +1,32 @@
 import React, {useEffect, useState} from "react";
 import Cookies from 'cookies-js';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Grid from "@material-ui/core/Grid";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import RatingIcons from "../blogComponents/RatingIcons";
+import 'react-google-places-autocomplete/src/assets/index.css';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 export default function BlogPostEditor() {
     const newPost = {
         id: 0,
-        title: ""
-    }
+        title: "",
+        date: new Date(),
+        url: "",
+        img: [],
+        tldr: "",
+        location: "",
+        ratings: {
+            star: 0,
+            price: 0,
+            drinks: 0,
+            food: 0
+        },
+        desc: "",
+        published: false
+    };
 
     const [article, setArticle] = useState("0");
     const [articles, setArticles] = useState([]);
@@ -16,13 +34,24 @@ export default function BlogPostEditor() {
 
 
     useEffect(() => {
-        console.log("read articles");
         fetch('/articles.json')
             .then(res => res.json())
             .then(data => {
                 setArticles(data.articles);
             })
     },[])
+
+    useEffect(() => {
+        updateArticle();
+    },[
+        articleData.ratings.star,
+        articleData.ratings.drinks,
+        articleData.ratings.food,
+        articleData.ratings.price,
+        articleData.published,
+        articleData.location,
+        articleData.googlePlaceId
+    ])
 
     function changeArticle(event) {
         let id = +event.currentTarget.value;
@@ -35,6 +64,12 @@ export default function BlogPostEditor() {
     }
 
     function updateArticle() {
+        if (articleData.title === '') {
+            return;
+        }
+        if (articles.filter(a => a === articleData).length > 0) {
+            return;
+        }
         const opt = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' , session: Cookies.get('hfbSession') },
@@ -44,39 +79,135 @@ export default function BlogPostEditor() {
         fetch('http://localhost:3001/article', opt)
             .then(res => res.json())
             .then(data => {
-                let newArticles = articles;
-                if (+article === 0) {
-                    newArticles.push(data);
+                console.log(data);
+                setArticles(data.articles);
+                if (articleData.id === 0) {
+                    setArticle(data.articles[data.articles.length - 1].id);
+                    setArticleData(data.articles[data.articles.length - 1]);
                 } else {
-                    newArticles = newArticles.map(a => a.id === +article ? data : a);
+                    setArticleData(data.articles.filter(a => a.id === +article)[0]);
                 }
-                setArticles(newArticles);
-                setArticle(data.id);
             });
     }
 
-    return <Grid container direction={"column"} justify={"center"} style={{ textAlign: "center" }}>
-        <Grid item style={{ marginTop: 10 }}>
-            I want to edit <Select
-            native
-            value={article}
-            onChange={changeArticle}
-            style={{ marginLeft: 20 }}
-        >
-            <option value="0">New Post</option>
-            { articles.map(a => <option key={a.id} value={a.id}>{a.title}</option>) }
-        </Select>
-        </Grid>
-        <Grid item style={{ marginTop: 20 }}>
-            <TextField
-                label="Title"
-                value={articleData.title}
-                onChange={event => {
-                    setArticleData({...articleData, title: event.currentTarget.value} );
-                }}
-                onBlur={updateArticle}
-            />
-        </Grid>
+    function updateRating(icon, value) {
+        let ratings = articleData.ratings;
+        ratings[icon] = value;
+        setArticleData({...articleData, ratings: ratings});
+    }
 
-    </Grid>
+    function updateLocation(data) {
+        setArticleData( {...articleData, location: data.description, googlePlaceId: data.place_id});
+    }
+
+    function loadMap() {
+        if (articleData.location === '' || articleData.googlePlaceId === '') {
+            return;
+        }
+        //window.open("https://www.google.com/maps/place/?q=place_id:" + articleData.googlePlaceId);
+        window.open("https://www.google.com/maps/search/?api=1&query="
+            + articleData.location + "&query_place_id=" + articleData.googlePlaceId);
+    }
+
+    function saveCustomLocation(event) {
+        let place = event.currentTarget.children[0].children[0].value;
+        if (articleData.location !== place) {
+            setArticleData({...articleData, location: place, googlePlaceId: ''});
+        }
+    }
+
+    return (
+        <Grid
+            container
+            spacing={3}
+            justify={"center"}
+            alignContent={"center"}
+            style={{ width: '98vw', height: '100vh', textAlign: "center" }}
+        >
+            <Grid item xs={9} style={{ marginTop: 20 }}>
+                <h1>HFB CMS</h1>
+                <Button onClick={() => window.location = '/'} variant={"outlined"}>Back to site</Button>
+            </Grid>
+            <Grid item xs={9} style={{ marginTop: 10 }} >
+                I want to edit <Select
+                native
+                value={article}
+                onChange={changeArticle}
+                style={{ marginLeft: 20, minWidth: '200px' }}
+            >
+                <option value="0">New Post</option>
+                { articles !== undefined && articles.map(a => <option key={a.id} value={a.id}>{a.title}</option>) }
+            </Select>
+            </Grid>
+            <Grid item xs={9}>
+                <TextField
+                    label="Title"
+                    fullWidth={true}
+                    value={articleData.title}
+                    onChange={event => {
+                        setArticleData({...articleData, title: event.currentTarget.value} );
+                    }}
+                    onBlur={updateArticle}
+                    variant="outlined"
+                />
+            </Grid>
+            <Grid item xs={9} style={{ textAlign: "right" }} onBlur={saveCustomLocation}>
+                <GooglePlacesAutocomplete
+                    inputStyle={{ width: '100%'}}
+                    placeholder="Place name"
+                    initialValue={articleData.location}
+                    onSelect={updateLocation}
+                />
+                <LocationOnIcon
+                    style={{ position: "relative", top: -30 }}
+                    onClick={loadMap}
+                />
+            </Grid>
+            <Grid item xs={9}>
+                Images
+            </Grid>
+            <Grid item xs={9}>
+                <TextField
+                    label="TLDR"
+                    fullWidth={true}
+                    multiline={true}
+                    rows={3}
+                    rowsMax={5}
+                    value={articleData.tldr}
+                    onChange={event => {
+                        setArticleData({...articleData, tldr: event.currentTarget.value} );
+                    }}
+                    onBlur={updateArticle}
+                    variant="outlined"
+                />
+            </Grid>
+            <Grid item xs={9}>
+                <RatingIcons ratings={articleData.ratings} readOnly={false} updateRating={updateRating}/>
+            </Grid>
+            <Grid item xs={9}>
+                <TextField
+                    label="Description"
+                    fullWidth={true}
+                    multiline={true}
+                    rows={5}
+                    rowsMax={100}
+                    value={articleData.desc}
+                    onChange={event => {
+                        setArticleData({...articleData, desc: event.currentTarget.value} );
+                    }}
+                    onBlur={updateArticle}
+                    variant="outlined"
+                />
+            </Grid>
+            <Grid item xs={9}>
+                <Button
+                    variant={"outlined"}
+                    color={"secondary"}
+                    onClick={() => setArticleData({...articleData, published: !articleData.published})}
+                >
+                    {articleData.published ? "Unpublish" : "Publish"}
+                </Button>
+            </Grid>
+        </Grid>
+    )
 }
