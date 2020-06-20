@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import RatingIcons from "../blogComponents/RatingIcons";
 import 'react-google-places-autocomplete/src/assets/index.css';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import ImageUpload from "./ImageUpload";
 
 export default function BlogPostEditor() {
     const newPost = {
@@ -50,7 +51,8 @@ export default function BlogPostEditor() {
         articleData.ratings.price,
         articleData.published,
         articleData.location,
-        articleData.googlePlaceId
+        articleData.googlePlaceId,
+        articleData.img
     ])
 
     useEffect(() => {
@@ -93,7 +95,7 @@ export default function BlogPostEditor() {
             crossDomain: true,
             body: JSON.stringify(articleData)
         }
-        fetch('http://localhost:3001/article', opt)
+        fetch('/article', opt)
             .then(res => res.json())
             .then(data => {
                 setArticles(data.articles);
@@ -160,6 +162,10 @@ export default function BlogPostEditor() {
         }
     }
 
+    const updateImages = (images) => {
+        setArticleData({...articleData, img: images});
+    }
+
     return (
         <Grid
             container
@@ -220,7 +226,7 @@ export default function BlogPostEditor() {
                 />
             </Grid>
             <Grid item xs={9}>
-                Images
+                <ImageUpload articleId={articleData.id} img={articleData.img} updateImages={updateImages}/>
             </Grid>
             <Grid item xs={9}>
                 <TextField

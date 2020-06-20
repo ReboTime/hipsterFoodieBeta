@@ -32,7 +32,7 @@ function App() {
 						<Route path='/cms'>
 							<CMS />
 						</Route>
-						<Route path='/:url'>
+						<Route path='/post/:url'>
 							<Article />
 						</Route>
 						<Route exact path='/'>
