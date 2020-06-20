@@ -95,7 +95,7 @@ export default function BlogPostEditor() {
             crossDomain: true,
             body: JSON.stringify(articleData)
         }
-        fetch('http://localhost:3001/article', opt)
+        fetch('/article', opt)
             .then(res => res.json())
             .then(data => {
                 setArticles(data.articles);

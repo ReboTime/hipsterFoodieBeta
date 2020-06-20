@@ -31,7 +31,7 @@ export default function ImageUpload(props) {
             crossDomain: true,
             body: JSON.stringify({data: picture})
         }
-        fetch('http://localhost:3001/article/addImage', opt);
+        fetch('/article/addImage', opt);
     }
 
     const deletePictures = () => {
@@ -44,7 +44,7 @@ export default function ImageUpload(props) {
             },
             crossDomain: true,
         }
-        return fetch('http://localhost:3001/article/clearImages', opt);
+        return fetch('/article/clearImages', opt);
     }
 
     const onDrop = (picture, files) => {

@@ -23,7 +23,7 @@ export default function CMS() {
             crossDomain: true,
             body: JSON.stringify({cookie: cookie})
         }
-        fetch('http://localhost:3001/login/cookie', opt)
+        fetch('/login/cookie', opt)
             .then(res => res.json())
             .then(data => {
                 if (data.valid) {

@@ -30,7 +30,7 @@ export default function Login(props) {
             crossDomain: true,
             body: JSON.stringify({user: user, password: pass})
         }
-        fetch('http://localhost:3001/login', opt)
+        fetch('/login', opt)
             .then(res => res.json())
             .then(data => {
                 if (data !== undefined && data.session !== undefined) {
