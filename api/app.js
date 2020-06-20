@@ -19,4 +19,4 @@ app.use('/login', loginRouter);
 app.use('/post/*', express.static('../ui/build/'));
 app.use('/cms', express.static('../ui/build/'));
 app.use('/', express.static('../ui/build/'));
-app.listen(80);
+app.listen(3000);
