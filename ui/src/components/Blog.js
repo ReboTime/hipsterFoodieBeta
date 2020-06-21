@@ -34,7 +34,7 @@ export default function Blog() {
 	// this useEffect will run once
 	// similar to componentDidMount()
 	useEffect(() => {
-		fetch('/articles.json')
+		fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json')
 			.then((res) => res.json())
 			.then(
 				(result) => {
@@ -73,29 +73,25 @@ export default function Blog() {
 			return false;
 		});
 	}
-	return (
-		<div className={classes.extraPadding}>
-			<SearchBlog
-				searchInput={searchInput}
-				handleSearchInputChange={handleSearchInputChange}
-			/>
-			<Grid container spacing={3} align='center'>
-				<Grid item xs={12}>
-					<Title />
-				</Grid>
-				{searchInput.length > 3 ? searchTitle : <div></div>}
-				{articlesToDisplay
-					.filter((article) => (article.published ? true : false))
-					.sort((a, b) => b.date.localeCompare(a.date))
-					.map((article) => {
-						return (
-							<Grid item xs={12} md={6} lg={3} key={article.id}>
-								<BlogPost article={article} toggleSnackbar={toggleSnackbar}/>
-							</Grid>
-						);
-					})}
+	return <div className={classes.extraPadding}>
+		<SearchBlog
+			searchInput={searchInput}
+			handleSearchInputChange={handleSearchInputChange}
+		/>
+		<Grid container spacing={3} align='center'>
+			<Grid item xs={12}>
+				<Title />
 			</Grid>
-			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
-		</div>
-	);
+			{searchInput.length > 3 ? searchTitle : <div></div>}
+			{articlesToDisplay
+				.filter((article) => article.published)
+				.sort((a, b) => b.date.localeCompare(a.date))
+				.map((article) => {
+					return <Grid item xs={12} md={6} lg={3} key={article.id}>
+							<BlogPost article={article} toggleSnackbar={toggleSnackbar}/>
+						</Grid>;
+				})}
+		</Grid>
+		<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
+	</div>;
 }

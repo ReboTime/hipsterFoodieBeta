@@ -1,21 +1,11 @@
 let express = require('express');
-let fs = require('fs');
 let router = express.Router();
-let articlesFile = 'ui/build/articles.json';
-let imageDir = 'ui/build/images/';
-let rimraf = require('rimraf');
+let imageDir = 'images/';
 const path = require('path');
-
-function writeArticles(json) {
-    fs.unlink(articlesFile, function (err) {
-        if (err) return console.log(err);
-        fs.appendFile(articlesFile, JSON.stringify(json), function(err) {
-            if (err) return console.log(err);
-            console.log("File was updated!");
-        });
-    });
-
-}
+let AWS = require('aws-sdk');
+AWS.config.update({region: 'eu-west-1'});
+let s3 = new AWS.S3({apiVersion: '2006-03-01'});
+let bucket = 'hipster-foodie-beta';
 
 router.post('/', function(req, res) {
     let session = req.get('session');
@@ -25,24 +15,32 @@ router.post('/', function(req, res) {
     }
     let article = req.body;
     let json;
-    fs.readFile(articlesFile, 'utf8', function (err,data) {
+    let jsonParams = {
+        Bucket: bucket,
+        Key: 'articles.json',
+    }
+    s3.getObject(jsonParams, function(err, data) {
         if (err) {
-            json = { articles: [] };
-            article.id = 1;
-            json.articles.push(article);
-            writeArticles(json);
-            res.send(article);
-            return;
-        }
-        json = JSON.parse(data);
-        if (article.id === null || article.id === 0) {
-            article.id = json.articles.length + 1;
-            json.articles.push(article);
+            console.log(err, err.stack);
+            json = {articles: []};
         } else {
-            json.articles = json.articles.map(a => a.id === article.id ? article : a);
+            console.log(data.Body.toString());
+            json = JSON.parse(data.Body.toString());
+            if (article.id === null || article.id === 0) {
+                article.id = json.articles.length + 1;
+                json.articles.push(article);
+            } else {
+                json.articles = json.articles.map(a => a.id === article.id ? article : a);
+            }
         }
-        writeArticles(json);
-        res.send(json);
+        jsonParams.ContentType = 'application/json; charset=utf-8';
+        jsonParams.ACL = 'public-read';
+        jsonParams.Body = JSON.stringify(json);
+        console.log(jsonParams);
+        s3.upload(jsonParams, function (err) {
+            if (err) console.log(err);
+            res.send(json);
+        })
     });
 });
 
@@ -55,16 +53,8 @@ router.post('/addImage', function(req, res) {
     let imageData = req.body;
     let fileName = req.get('fileName');
     let articleId = req.get('articleId');
-    if (!fs.existsSync(imageDir + articleId)) {
-        fs.mkdirSync(imageDir + articleId);
-    }
-    saveImage(imageDir + articleId + '/' + fileName, imageData.data);
-    res.send({ result: "OK"});
+    saveImage(imageDir + articleId + '/' + fileName, imageData.data).then(() => res.send({ result: "OK"}));
 });
-
-function saveImage(file, data) {
-    fs.writeFile(file,  Buffer.from(data.replace(/.*base64,/,""), "base64"), 'utf8', () => {});
-}
 
 router.post('/deleteImage', function (req, res) {
     let session = req.get('session');
@@ -74,13 +64,41 @@ router.post('/deleteImage', function (req, res) {
     }
     let fileName = req.get('fileName');
     let articleId = req.get('articleId');
-    rimraf(imageDir + articleId + '/' + path.basename(fileName), (err) => {
+    deleteImage(imageDir + articleId + '/' + path.basename(fileName));
+});
+
+async function saveImage(file, data) {
+    let uploadParams = {
+        Bucket: bucket,
+        Key: file,
+        ContentType: 'image/jpeg',
+        ACL: "public-read",
+        Body: Buffer.from(data.replace(/.*base64,/,""), "base64")
+    };
+
+    await s3.upload (uploadParams, function (err, data) {
         if (err) {
-            res.send({result: err});
-        } else {
-            res.send({ result: "Deleted file " + imageDir + articleId + '/' + fileName});
+            console.log("Error", err);
+        } if (data) {
+            console.log("Upload Success", data.Location);
         }
     });
-});
+}
+
+function deleteImage(file) {
+    let deleteParams = {
+        Bucket: bucket,
+        Key: file,
+    };
+
+    s3.deleteObject(deleteParams, function (err, data) {
+        if (err) {
+            console.log("Error", err);
+        } if (data) {
+            console.log("Delete Success", data.Location);
+        }
+    });
+}
+
 
 module.exports = router;

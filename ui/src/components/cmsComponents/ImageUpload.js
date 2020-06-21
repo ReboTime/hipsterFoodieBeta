@@ -9,8 +9,8 @@ import Cookies from "cookies-js";
 export default function ImageUpload(props) {
     const [savedImages, setSavedImages] = useState(props.img);
     const [showImageModal, setShowImageModal] = useState(false);
-    const imageDir = "/images/";
-    const apiHost = process.env.NODE_ENV === "dev" ? 'http://localhost:5000' : '';
+    const imageDir = "https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/images/";
+    const apiHost = process.env.NODE_ENV === "development" ? 'http://localhost:5000' : '';
 
     useEffect(() => {
         setSavedImages(props.img);
@@ -22,13 +22,13 @@ export default function ImageUpload(props) {
         }
     }, [ savedImages ])
 
-    const uploadPicture = (picture, id) => {
+    const uploadPicture = (picture, fileName) => {
         let opt = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' ,
                 session: Cookies.get('hfbSession'),
-                fileName: id + '.jpg',
+                fileName: fileName + '.jpg',
                 articleId: props.articleId
             },
             crossDomain: true,
@@ -71,6 +71,7 @@ export default function ImageUpload(props) {
            }
         });
         setSavedImages(images);
+        console.log(images);
     };
 
     const closeImageModal = () => {

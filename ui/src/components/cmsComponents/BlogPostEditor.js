@@ -35,7 +35,7 @@ export default function BlogPostEditor() {
     const places = useRef(null);
 
     useEffect(() => {
-        fetch('/articles.json')
+        fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json')
             .then(res => res.json())
             .then(data => {
                 setArticles(data.articles);

@@ -28,7 +28,7 @@ export default function Article() {
 	}
 
 	useEffect(() => {
-		fetch('/articles.json')
+		fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json')
 			.then((res) => res.json())
 			.then(
 				(result) => {
