@@ -3,7 +3,7 @@
 		{
 			"id": 1,
 			"title": "meat busters",
-			"date": "2014-02-01T09:28:56.321-10:00",
+			"date": "2014-02-03T09:28:56.321-10:00",
 			"url": "meat-busters",
 			"img": [
 				"https://restaurant-montefiore.ro/wp-content/uploads/2018/10/interior-montefiore_hdr-11.jpg",
@@ -21,7 +21,7 @@
 			"title": "kebab busters",
 			"date": "2014-02-01T09:28:56.321-10:00",
 			"url": "kebab-busters-yeah",
-			"img": ["./img/pic1.jpg", "./img/pic1.jpg", "./img/pic1.jpg"],
+			"img": [],
 			"tldr": "it was delcious. must go!",
 			"location": "-23, 23",
             "googlePlaceId": "ChIJJSl8TXdnRUcRsDytDqfPXP0",
@@ -32,25 +32,24 @@
 		{
 			"id": 3,
 			"title": "deceeeeee",
-			"date": "2014-02-01T09:28:56.321-10:00",
+			"date": "2014-03-01T09:28:56.321-10:00",
 			"url": "kebab-busters",
 			"img": [
-				"https://restaurant-montefiore.ro/wp-content/uploads/2018/10/interior-montefiore_hdr-11.jpg",
-				"./img/pic1.jpg"
+				"https://restaurant-montefiore.ro/wp-content/uploads/2018/10/interior-montefiore_hdr-11.jpg"
 			],
 			"tldr": "it was delcious. must go!",
 			"location": "-23, 23",
             "googlePlaceId": "ChIJJSl8TXdnRUcRsDytDqfPXP0",
 			"ratings": { "star": 4, "price": 4, "drinks": 3, "food": 4.5 },
 			"desc": "we went to have a beer and a steak and blah blah blah lorem ipsum lasadnja dfg dsg sdfg sdf gsdf   sdfgsdfg sdf gsd fgs dfg sdfgsdf g sdfg sdf7",
-			"published": true
+			"published": false
 		},
 		{
 			"id": 4,
 			"title": "kebab busters",
-			"date": "2014-02-01T09:28:56.321-10:00",
+			"date": "2018-02-01T09:28:56.321-10:00",
 			"url": "ultra-kebab-busters",
-			"img": ["./img/pic1.jpg", "./img/pic1.jpg"],
+			"img": [],
 			"tldr": "it was delcious. must go!",
 			"location": "-23, 23",
             "googlePlaceId": "ChIJJSl8TXdnRUcRsDytDqfPXP0",
@@ -61,9 +60,9 @@
 		{
 			"id": 5,
 			"title": "kebab busters",
-			"date": "2014-02-01T09:28:56.321-10:00",
+			"date": "2020-02-03T09:28:56.321-10:00",
 			"url": "mega-kebab-busters",
-			"img": ["./img/pic1.jpg", "./img/pic1.jpg"],
+			"img": [],
 			"tldr": "it was delcious. must go!",
 			"location": "-23, 23",
             "googlePlaceId": "ChIJJSl8TXdnRUcRsDytDqfPXP0",
