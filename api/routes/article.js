@@ -4,6 +4,7 @@ let router = express.Router();
 let articlesFile = 'ui/build/articles.json';
 let imageDir = 'ui/build/images/';
 let rimraf = require('rimraf');
+const path = require('path');
 
 function writeArticles(json) {
     fs.unlink(articlesFile, function (err) {
@@ -65,15 +66,20 @@ function saveImage(file, data) {
     fs.writeFile(file,  Buffer.from(data.replace(/.*base64,/,""), "base64"), 'utf8', () => {});
 }
 
-router.post('/clearImages', function (req, res) {
+router.post('/deleteImage', function (req, res) {
     let session = req.get('session');
     if (session !== global.sessionCookie) {
         res.send({error: 'Unauthorized'});
         return;
     }
+    let fileName = req.get('fileName');
     let articleId = req.get('articleId');
-    rimraf(imageDir + articleId, () => {
-        res.send({ result: "OK"});
+    rimraf(imageDir + articleId + '/' + path.basename(fileName), (err) => {
+        if (err) {
+            res.send({result: err});
+        } else {
+            res.send({ result: "Deleted file " + imageDir + articleId + '/' + fileName});
+        }
     });
 });
 

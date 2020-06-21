@@ -2,7 +2,6 @@ let express = require('express');
 let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let cors = require('cors')
-let indexRouter = require('./routes/index');
 let articleRouter = require('./routes/article');
 let loginRouter = require('./routes/login');
 
@@ -19,7 +18,8 @@ app.use('/login', loginRouter);
 app.use('/post/*', express.static('ui/build/'));
 app.use('/cms', express.static('ui/build/'));
 app.use('/', express.static('ui/build/'));
-app.listen(process.env.PORT || 3000, () => {
+let port = process.env.PORT || 5000;
+app.listen(port, () => {
     console.log("Current path : " + process.cwd());
-    console.log("Port : " + process.env.PORT);
+    console.log("Port : " + port);
 });

@@ -10,6 +10,7 @@ export default function Login(props) {
     const [errorUser, setErrorUser] = useState(false);
     const [errorPass, setErrorPass] = useState(false);
     const [errorLogin, setErrorLogin] = useState('');
+    const apiHost = process.env.NODE_ENV === "development" ? 'http://localhost:5000' : '';
 
     function login() {
         if(user === undefined || user === '') {
@@ -30,7 +31,7 @@ export default function Login(props) {
             crossDomain: true,
             body: JSON.stringify({user: user, password: pass})
         }
-        fetch('/login', opt)
+        fetch(apiHost + '/login', opt)
             .then(res => res.json())
             .then(data => {
                 if (data !== undefined && data.session !== undefined) {
