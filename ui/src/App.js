@@ -20,6 +20,7 @@ const theme = createMuiTheme({
 			default: '#fff',
 		},
 	},
+	spacing: 4,
 });
 console.log(theme);
 function App() {

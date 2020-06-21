@@ -4,16 +4,25 @@ import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
 import SearchBlog from './blogComponents/SearchBlog';
 import CloseIcon from '@material-ui/icons/Close';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+	extraPadding: {
+		padding: theme.spacing(3),
+	},
+}));
 
 export default function Blog() {
+	const classes = useStyles();
+
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [articles, setArticles] = useState([]);
 	const [searchInput, setSearchInput] = useState('');
 
 	function handleSearchInputChange(value) {
-        setSearchInput(value);
-    }
+		setSearchInput(value);
+	}
 
 	// Note: the empty deps array [] means
 	// this useEffect will run once
@@ -40,7 +49,10 @@ export default function Blog() {
 		<Grid item xs={12}>
 			<Typography>
 				Search results for '{searchInput}'
-				<IconButton onClick={() => { handleSearchInputChange('') }}>
+				<IconButton
+					onClick={() => {
+						handleSearchInputChange('');
+					}}>
 					<CloseIcon fontSize='small' />
 				</IconButton>
 			</Typography>
@@ -50,28 +62,32 @@ export default function Blog() {
 	let articlesToDisplay = articles;
 	if (searchInput.length > 3) {
 		articlesToDisplay = articles.filter((article) => {
-			if (JSON.stringify(article).toLowerCase().match(searchInput.toLowerCase()) !== null) return true;
+			if (JSON.stringify(article).toLowerCase().match(searchInput.toLowerCase()) !== null)
+				return true;
 			return false;
 		});
 	}
 	return (
-		<div>
-			<SearchBlog searchInput={searchInput} handleSearchInputChange={handleSearchInputChange}/>
+		<div className={classes.extraPadding}>
+			<SearchBlog
+				searchInput={searchInput}
+				handleSearchInputChange={handleSearchInputChange}
+			/>
 			<Grid container spacing={3} align='center'>
 				<Grid item xs={12}>
 					<Title />
 				</Grid>
 				{searchInput.length > 3 ? searchTitle : <div></div>}
-				{articlesToDisplay.map((article) => {
-					if (article.published)
+				{articlesToDisplay
+					.filter((article) => (article.published ? true : false))
+					.sort((a, b) => b.date.localeCompare(a.date))
+					.map((article) => {
 						return (
 							<Grid item xs={12} md={6} lg={3} key={article.id}>
 								<BlogPost article={article} />
 							</Grid>
 						);
-					// EMPTY RETURN RESULTS IN ERROR. PLACING EMPTY DIV WITH UNPUBLISHED ARTICLE NAME
-					return <div id={article.title} className='unpublished' key={article.id}></div>;
-				})}
+					})}
 			</Grid>
 		</div>
 	);

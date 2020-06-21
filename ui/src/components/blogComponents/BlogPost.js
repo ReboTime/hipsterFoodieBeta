@@ -68,9 +68,7 @@ const useStyles = makeStyles((theme) => ({
 export default function BlogPost(props) {
 	const classes = useStyles();
 	const [expanded, setExpanded] = useState(false);
-
-	const BLOG_URL = 'http://localhost:3000';
-	const formattedUrl = `${BLOG_URL}/${props.article.url}`;
+	const [formattedUrl, setFormattedUrl] = useState(`${window.location.href}post/${props.article.url}`);
   
   // FORMAT DATE FOR DISPLAY
 	function formatDate() {
@@ -152,10 +150,9 @@ export default function BlogPost(props) {
 			<CardActions disableSpacing>
 				{/* "SHARE ON" LINKS TO FACEBOOK, OR COPY TEXT TO CLIPBOARD */}
 				<Typography variant='body2'>Share</Typography>
-				{/* !! TO DO  -> REMOVE BELOW TERNARY EXPRESSION FOR DEPLOYMENT AND CHANGE BLOG_URL TO PROPER VALUE */}
 				<FacebookShareButton
 					className={classes.facebookButton}
-					url={true ? 'http://www.google.com/' : formattedUrl}>
+					url={formattedUrl}>
 					<FacebookIcon size={25} borderRadius={8} />
 				</FacebookShareButton>
 				<Typography variant='body2'>Copy link</Typography>
