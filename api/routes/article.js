@@ -9,7 +9,7 @@ let bucket = 'hipster-foodie-beta';
 
 router.post('/', function(req, res) {
     let session = req.get('session');
-    if (session !== global.sessionCookie) {
+    if (!global.sessionCookie.includes(session)) {
         res.send({error: 'Unauthorized'});
         return;
     }
@@ -24,7 +24,6 @@ router.post('/', function(req, res) {
             console.log(err, err.stack);
             json = {articles: []};
         } else {
-            console.log(data.Body.toString());
             json = JSON.parse(data.Body.toString());
             if (article.id === null || article.id === 0) {
                 article.id = json.articles.length + 1;
@@ -46,7 +45,7 @@ router.post('/', function(req, res) {
 
 router.post('/addImage', function(req, res) {
     let session = req.get('session');
-    if (session !== global.sessionCookie) {
+    if (!global.sessionCookie.includes(session)) {
         res.send({error: 'Unauthorized'});
         return;
     }
@@ -58,7 +57,7 @@ router.post('/addImage', function(req, res) {
 
 router.post('/deleteImage', function (req, res) {
     let session = req.get('session');
-    if (session !== global.sessionCookie) {
+    if (!global.sessionCookie.includes(session)) {
         res.send({error: 'Unauthorized'});
         return;
     }

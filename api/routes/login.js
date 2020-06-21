@@ -2,7 +2,7 @@ let express = require('express');
 let crypto = require('crypto');
 let bcrypt = require('bcrypt');
 let router = express.Router();
-global.sessionCookie = 'initCookie';
+global.sessionCookie = [];
 global.password = 'init';
 
 bcrypt.hash("myCMSPassw0rd", 10, function(err, hash) {
@@ -13,8 +13,9 @@ router.post('/', function(req, res) {
     if (json.user === "admin" && json.password !== null) {
         bcrypt.compare(json.password, password, function(err, result) {
             if (result === true) {
-                global.sessionCookie = crypto.randomBytes(256).toString('hex');
-                res.send({ session: sessionCookie });
+                let newCookie = crypto.randomBytes(256).toString('hex');
+                global.sessionCookie.push(newCookie);
+                res.send({ session: newCookie });
             } else {
                 res.send({ error: "Unauthorized" });
             }
@@ -26,7 +27,7 @@ router.post('/', function(req, res) {
 
 router.post('/cookie', function (req, res) {
     setTimeout(() => {
-        if (req.body !== undefined && req.body.cookie === global.sessionCookie) {
+        if (req.body !== undefined && global.sessionCookie.includes(req.body.cookie)) {
             res.send({valid: true});
         } else {
             res.send({valid: false});
