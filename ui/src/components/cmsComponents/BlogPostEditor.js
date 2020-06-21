@@ -28,7 +28,7 @@ export default function BlogPostEditor() {
         desc: "",
         published: false
     };
-
+    const apiHost = process.env.NODE_ENV === "dev" ? 'http://localhost:5000' : '';
     const [article, setArticle] = useState("0");
     const [articles, setArticles] = useState([]);
     const [articleData, setArticleData] = useState(newPost);
@@ -95,7 +95,7 @@ export default function BlogPostEditor() {
             crossDomain: true,
             body: JSON.stringify(articleData)
         }
-        fetch('/article', opt)
+        fetch(apiHost + '/article', opt)
             .then(res => res.json())
             .then(data => {
                 setArticles(data.articles);

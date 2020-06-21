@@ -7,17 +7,20 @@ import ImageUploader from "react-images-upload";
 import Cookies from "cookies-js";
 
 export default function ImageUpload(props) {
-    const [img, setImg] = useState(props.img);
+    const [savedImages, setSavedImages] = useState(props.img);
     const [showImageModal, setShowImageModal] = useState(false);
-    const [pictures, setPictures] = useState([]);
     const imageDir = "/images/";
-    const [hasChanges, setHasChanges] = useState(false);
+    const apiHost = process.env.NODE_ENV === "dev" ? 'http://localhost:5000' : '';
 
     useEffect(() => {
-        console.log(props.img);
-        setImg(props.img);
-        setHasChanges(false);
+        setSavedImages(props.img);
     }, [props.img])
+
+    useEffect(() => {
+        if (savedImages !== props.img) {
+            props.updateImages(savedImages);
+        }
+    }, [ savedImages ])
 
     const uploadPicture = (picture, id) => {
         let opt = {
@@ -31,41 +34,46 @@ export default function ImageUpload(props) {
             crossDomain: true,
             body: JSON.stringify({data: picture})
         }
-        fetch('/article/addImage', opt);
+        return fetch(apiHost + '/article/addImage', opt);
     }
 
-    const deletePictures = () => {
+    const deletePicture = (fileName) => {
         let opt = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' ,
                 session: Cookies.get('hfbSession'),
-                articleId: props.articleId
+                articleId: props.articleId,
+                fileName: fileName
             },
             crossDomain: true,
         }
-        return fetch('/article/clearImages', opt);
+        return fetch(apiHost + '/article/deleteImage', opt);
     }
 
     const onDrop = (picture, files) => {
-        setHasChanges(true);
-        setPictures(files);
+        let images = [...savedImages];
+        files.forEach(fileData => {
+            if (fileData.startsWith("data:image") && !savedImages.includes(fileData)) {
+                let uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                uploadPicture(fileData, uuid).then(() => {
+                    console.log("upload complete!");
+                });
+                images.push( imageDir + props.articleId + '/' + uuid + '.jpg')
+            }
+        });
+        savedImages.forEach(savedImage => {
+           if (!files.includes(savedImage)) {
+                deletePicture(savedImage).then(() => {
+                   console.log("deleted file " + savedImage + " with index " + (images.indexOf(savedImage)));
+               });
+               images.splice(savedImages.indexOf(savedImage), 1);
+           }
+        });
+        setSavedImages(images);
     };
 
     const closeImageModal = () => {
-        if (hasChanges) {
-            let id = 1;
-            let images = [];
-            deletePictures().then(() => {
-                pictures.forEach(picture => {
-                    uploadPicture(picture, id);
-                    images.push(imageDir + props.articleId + '/' + id + '.jpg');
-                    id++;
-                });
-                props.updateImages(images);
-            });
-            setHasChanges(false);
-        }
         setShowImageModal(false);
     }
 
