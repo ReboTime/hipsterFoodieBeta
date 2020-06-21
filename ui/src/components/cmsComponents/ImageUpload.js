@@ -116,6 +116,9 @@ export default function ImageUpload(props) {
                 onEscapeKeyDown={closeImageModal}
                 fullWidth={true}
             >
+                <div>
+                    <span onClick={closeImageModal} style={{ float: "right" , margin: '10px 10px 0 0', cursor: "pointer" }}>X</span>
+                </div>
                 <DialogTitle id="dialog-title" style={{ textAlign: "center"}}>
                     Post images
                 </DialogTitle>
@@ -124,7 +127,7 @@ export default function ImageUpload(props) {
                         withIcon={true}
                         withPreview={true}
                         defaultImages={props.img}
-                        label="Baga poze"
+                        label=""
                         onChange={onDrop}
                         imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                         maxFileSize={15242880}
