@@ -7,6 +7,7 @@ import SearchBlog from './blogComponents/SearchBlog';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import InfiniteScroll from 'react-infinite-scroller';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,21 +30,28 @@ export default function Blog() {
 	const [snackOpen, setSnackOpen] = useState(false);
 
 	function handleSearchInputChange(value) {
-		console.log(value);
-		setSearchInput(value);
 		if (value.length > 3) {
-			setArticles(
-				articles.filter((article) => {
-					return JSON.stringify(article).toLowerCase().match(value.toLowerCase()) !== null;
-				}),
-			);
+			let searchArticles = allArticles.filter((article) => article.published
+				&& containsValue(article, value));
+			setArticles(searchArticles);
+			let displayArticles = [...searchArticles];
+			setDisplayedArticles(displayArticles.splice(0, searchArticles.length > 5 ? 5 : searchArticles.length));
 			setLastIndex(0);
-			setHasMore(true);
+			setHasMore(searchArticles.length > 5);
 		} else {
-			setArticles(allArticles);
-			setLastIndex(0);
-			setHasMore(true);
+			if (value.length === 0 || value.length === 3) {
+				setArticles(allArticles);
+				setLastIndex(0);
+				setHasMore(true);
+			}
 		}
+		setSearchInput(value);
+	}
+
+	function containsValue(article, value) {
+		return (article.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+			article.desc.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+			article.tldr.toLowerCase().indexOf(value.toLowerCase()) !== -1);
 	}
 
 	function toggleSnackbar() {
@@ -86,6 +94,7 @@ export default function Blog() {
 
 	function loadArticles() {
 		console.log('loading 5 more');
+		console.log(articles);
 		let index = lastIndex + 5;
 		if (index >= articles.length) {
 			index = articles.length;
@@ -125,13 +134,14 @@ export default function Blog() {
 					container
 					justify="center"
 					spacing={3}
+					threshold={1000}
 					initialLoad={isLoaded}
 					loadMore={loadArticles}
 					hasMore={hasMore}
 					loader={
-						<div className='loader' key={0}>
-							Loading ...
-						</div>
+						<Grid item xs={12} key={0}>
+							<CircularProgress size="50px" thickness={1} />
+						</Grid>
 					}>
 					{displayedArticles.map((article) => {
 						return (

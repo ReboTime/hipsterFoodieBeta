@@ -14,6 +14,7 @@
     "cookies-js": "^1.2.3",
     "react": "^16.13.1",
     "react-awesome-slider": "^4.1.0",
+    "react-cool-img": "^1.2.0",
     "react-dom": "^16.13.1",
     "react-google-places-autocomplete": "^2.0.7",
     "react-images-upload": "^1.2.8",

@@ -1,24 +1,12 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
-import {
-	Card,
-	CardHeader,
-	CardContent,
-	CardActions,
-	Collapse,
-	Grid,
-	IconButton,
-	Typography,
-} from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
+import {Card, CardActions, CardContent, CardHeader, Collapse, Grid, IconButton, Typography,} from '@material-ui/core';
 // ICON IMPORTS
 import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
-import { FacebookIcon } from 'react-share';
+import {FacebookIcon, FacebookShareButton} from 'react-share';
 import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyTwoTone';
 import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
-
-import { FacebookShareButton } from 'react-share';
 import RatingIcons from './RatingIcons';
 import AwesomeSlider from 'react-awesome-slider';
 import 'react-awesome-slider/dist/styles.css';
@@ -53,20 +41,17 @@ const useStyles = makeStyles((theme) => ({
 export default function BlogPost(props) {
 	const classes = useStyles();
 	const [expanded, setExpanded] = useState(false);
-	const [formattedUrl, setFormattedUrl] = useState(`${window.location.origin}/post/${props.article.url}`);
-  
+	const formattedUrl = window.location.origin + '/post/' + props.article.url;
+
   // FORMAT DATE FOR DISPLAY
 	function formatDate() {
 		const date = new Date(props.article.date);
-		const formattedDate =
-			'Visited ' +
+		return 'Visited ' +
 			date.getFullYear() +
 			'-' +
 			('0' + (date.getMonth() + 1)).slice(-2) +
 			'-' +
 			('0' + date.getDate()).slice(-2);
-
-		return formattedDate;
 	}
 
 	// FORMAT GOOGLE LINK FOR MAP BUTTON
@@ -78,7 +63,7 @@ export default function BlogPost(props) {
 		setExpanded(!expanded);
 	};
 
-	const handleCopyLinkClick = (e) => {
+	const handleCopyLinkClick = () => {
 		const el = document.createElement('textarea');
 		el.value = formattedUrl;
 		document.body.appendChild(el);
@@ -99,10 +84,10 @@ export default function BlogPost(props) {
 			<AwesomeSlider className='aws-btn' bullets={false}>
 				{props.article.img.length > 0 ? (
 					props.article.img.map((link, arrayIndex) => (
-						<div key={arrayIndex} data-src={link}></div>
+						<div key={arrayIndex} data-src={link}/>
 					))
 				) : (
-					<div data-src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg'></div>
+					<div data-src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg'/>
 				)}
 			</AwesomeSlider>
 			<CardContent>

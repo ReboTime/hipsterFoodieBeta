@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import SearchIcon from '@material-ui/icons/Search';
-import { Drawer, Grid, IconButton, InputAdornment, TextField, Typography } from '@material-ui/core';
+import { Modal, Slide, Paper, Grid, IconButton, InputAdornment, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -14,20 +14,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SearchBlog(props) {
 	const [searchOpen, setSearchOpen] = useState(false);
-	const [searchInput, setSearchInput] = useState(props.searchInput);
 	const classes = useStyles();
-
-	useEffect(() => {
-		setSearchInput(props.searchInput);
-	}, [props.searchInput]);
 
 	function handleKeyDown(e) {
 		if (e.keyCode === 13) toggleDrawer();
 	}
 
-	function toggleDrawer(e) {
+	function toggleDrawer() {
 		setSearchOpen(!searchOpen);
-		console.log('drawer toggled');
 	}
 
 	if (!searchOpen) {
@@ -44,36 +38,48 @@ export default function SearchBlog(props) {
 
 	return (
 		<div>
-			<Drawer anchor='top' open={searchOpen} ModalProps={{ onBackdropClick: toggleDrawer }}>
-				<Grid container justify='center' spacing={3}>
-					<Grid item xs={10}>
-						<Typography variant='h4' color='initial'>
-							hope you find what you're looking for
-						</Typography>
-					</Grid>
-					<Grid item xs={10}>
-						<TextField
-							label='Search for:'
-							variant='outlined'
-							size='small'
-							fullWidth={true}
-							autoFocus={true}
-                            value={searchInput}
-                            onChange={(e) => { props.handleSearchInputChange(e.target.value)}}
-							onKeyDown={handleKeyDown}
-							InputProps={{
-								endAdornment: (
-									<InputAdornment position='end'>
-										<IconButton onClick={() => { props.handleSearchInputChange(''); }}>
-											<CloseIcon fontSize='small' />
-										</IconButton>
-									</InputAdornment>
-								),
-							}}
-						/>
-					</Grid>
-				</Grid>
-			</Drawer>
+			<Modal
+				open={searchOpen}
+				onClose={() => setSearchOpen(!searchOpen)}
+			>
+				<Slide
+					in={searchOpen}
+					timeout={1000}
+					direction={"down"}
+				>
+					<Paper>
+						<Grid container justify='center'>
+							<Grid item xs={10}>
+								<Typography variant='h4' color='initial'>
+									hope you find what you're looking for
+								</Typography>
+							</Grid>
+							<Grid item xs={10}>
+								<TextField
+									label='Search for:'
+									variant='outlined'
+									size='small'
+									fullWidth={true}
+									autoFocus={true}
+									value={props.searchInput}
+									onChange={(e) => { props.handleSearchInputChange(e.target.value)}}
+									onKeyDown={handleKeyDown}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position='end'>
+												<IconButton onClick={() => { props.handleSearchInputChange(''); }}>
+													<CloseIcon fontSize='small' />
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+									style={{ marginBottom: 10, marginTop: 10 }}
+								/>
+							</Grid>
+						</Grid>
+					</Paper>
+				</Slide>
+			</Modal>
 		</div>
 	);
 }
