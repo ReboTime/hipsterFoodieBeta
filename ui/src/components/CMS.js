@@ -6,7 +6,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 export default function CMS() {
     const [session, setSession] = useState(undefined);
     const [loading, setLoading] = useState(true);
-    const apiHost = process.env.NODE_ENV === "dev" ? 'http://localhost:5000' : '';
+    const apiHost = process.env.NODE_ENV === "development" ? 'http://localhost:5000' : '';
 
     useEffect(() => {
         let cookie = Cookies.get('hfbSession');
@@ -18,6 +18,7 @@ export default function CMS() {
     },[]);
 
     function checkSession(cookie) {
+        console.log("api host :" + process.env.NODE_ENV);
         const opt = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

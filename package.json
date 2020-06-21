@@ -1,6 +1,6 @@
 {
     "scripts": {
-      "heroku-prebuild": "cd ui && npm install && npm run build && cd .. && cd api && npm install",
+      "heroku-prebuild": "cd ui && cp build/articles.json public/ && cp build/images/* public/images/ && npm install && npm run build && cd .. && cd api && npm install",
       "start": "cd api && npm start"
     }
   }
