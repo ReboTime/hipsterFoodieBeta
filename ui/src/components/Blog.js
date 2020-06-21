@@ -43,8 +43,6 @@ export default function Blog() {
 			.then((res) => res.json())
 			.then(
 				(result) => {
-					setIsLoaded(true);
-
 					const filteredArticles = result.articles
 						.filter((article) => article.published)
 						.sort((a, b) => b.date.localeCompare(a.date));
@@ -58,6 +56,7 @@ export default function Blog() {
 						setDisplayedArticles(filteredArticles.slice(0,5));
 					}
 					setArticles(filteredArticles);
+					setIsLoaded(true);
 				},
 				// Note: it's important to handle errors here
 				// instead of a catch() block so that we don't swallow
@@ -97,9 +96,8 @@ export default function Blog() {
 	if (searchInput.length > 3) {
 		setDisplayedArticles(
 			displayedArticles.filter((article) => {
-				if (JSON.stringify(article).toLowerCase().match(searchInput.toLowerCase()) !== null)
-					return true;
-				return false;
+				return JSON.stringify(article).toLowerCase().match(searchInput.toLowerCase()) !== null;
+
 			}),
 		);
 	}
@@ -114,8 +112,13 @@ export default function Blog() {
 				<Grid item xs={12}>
 					<Title />
 				</Grid>
-				{searchInput.length > 3 ? searchTitle : <div></div>}
+				{searchInput.length > 3 ? searchTitle : <div/>}
 				<InfiniteScroll
+					element={Grid}
+					container
+					justify="center"
+					spacing={3}
+					initialLoad={isLoaded}
 					loadMore={loadArticles}
 					hasMore={hasMore}
 					loader={
@@ -125,7 +128,7 @@ export default function Blog() {
 					}>
 					{displayedArticles.map((article) => {
 						return (
-							<Grid item xs={12} md={6} lg={3} key={article.id}>
+							<Grid item xs={12} md={9} lg={7} key={article.id}>
 								<BlogPost article={article} toggleSnackbar={toggleSnackbar} />
 							</Grid>
 						);
