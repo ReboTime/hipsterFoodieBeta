@@ -3,14 +3,29 @@ import { useParams } from 'react-router-dom';
 import Title from './blogComponents/Title';
 import BlogPost from './blogComponents/BlogPost';
 import { Button, Grid, Link } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar'
+
+
+const useStyles = makeStyles((theme) => ({
+	extraPadding: {
+		padding: theme.spacing(3),
+	},
+}));
 
 export default function Article() {
+	const classes = useStyles();
 	// We can use the `useParams` hook here to access
 	// the dynamic pieces of the URL.
 	let { url } = useParams();
 	const [article, setArticle] = useState();
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [snackOpen, setSnackOpen] = useState(false);
+
+	function toggleSnackbar() {
+		setSnackOpen(!snackOpen);
+	}
 
 	useEffect(() => {
 		fetch('/articles.json')
@@ -28,21 +43,28 @@ export default function Article() {
 					setError(error);
 				},
 			);
-	});
-	let blogpost = article ? <BlogPost article={article} /> : '';
+	}, []);
+	let blogpost = article ? (
+		<BlogPost article={article} toggleSnackbar={toggleSnackbar}/>
+	) : (
+		<div>Article not found, check your link yo!</div>
+	);
 	return (
-		<Grid container spacing={3} align='center'>
-			<Grid item xs={12}>
-				<Title />
+		<div className={classes.extraPadding}>
+			<Grid container spacing={3} align='center'>
+				<Grid item xs={12}>
+					<Title />
+				</Grid>
+				<Grid item xs={12}>
+					{blogpost}
+				</Grid>
+				<Grid item xs={12}>
+					<Button variant='contained'>
+						<Link href='/'>GO HOME!</Link>
+					</Button>
+				</Grid>
 			</Grid>
-			<Grid item xs={12}>
-				{blogpost}
-			</Grid>
-			<Grid item xs={12}>
-				<Button variant='contained'>
-					<Link href='/'>GO HOME!</Link>
-				</Button>
-			</Grid>
-		</Grid>
+			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
+		</div>
 	);
 }

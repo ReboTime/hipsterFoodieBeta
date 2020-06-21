@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 export default function BlogPost(props) {
 	const classes = useStyles();
 	const [expanded, setExpanded] = useState(false);
-	const [formattedUrl, setFormattedUrl] = useState(`${window.location.href}post/${props.article.url}`);
+	const [formattedUrl, setFormattedUrl] = useState(`${window.location.origin}/post/${props.article.url}`);
   
   // FORMAT DATE FOR DISPLAY
 	function formatDate() {
@@ -101,6 +101,7 @@ export default function BlogPost(props) {
 		el.setSelectionRange(0, 99999); /*For mobile devices*/
 		document.execCommand('copy');
 		document.body.removeChild(el);
+		props.toggleSnackbar();
 	};
 
 	return (

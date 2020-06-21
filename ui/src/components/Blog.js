@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, IconButton, Typography } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
+import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar'
 import SearchBlog from './blogComponents/SearchBlog';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,9 +20,14 @@ export default function Blog() {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [articles, setArticles] = useState([]);
 	const [searchInput, setSearchInput] = useState('');
+	const [snackOpen, setSnackOpen] = useState(false);
 
 	function handleSearchInputChange(value) {
 		setSearchInput(value);
+	}
+
+	function toggleSnackbar() {
+		setSnackOpen(!snackOpen);
 	}
 
 	// Note: the empty deps array [] means
@@ -84,11 +90,12 @@ export default function Blog() {
 					.map((article) => {
 						return (
 							<Grid item xs={12} md={6} lg={3} key={article.id}>
-								<BlogPost article={article} />
+								<BlogPost article={article} toggleSnackbar={toggleSnackbar}/>
 							</Grid>
 						);
 					})}
 			</Grid>
+			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
 		</div>
 	);
 }
