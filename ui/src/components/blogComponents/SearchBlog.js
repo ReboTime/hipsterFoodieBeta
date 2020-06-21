@@ -23,7 +23,6 @@ export default function SearchBlog(props) {
 
 	function handleKeyDown(e) {
 		if (e.keyCode === 13) toggleDrawer();
-		console.log('key pressed. code:', e.keyCode);
 	}
 
 	function toggleDrawer(e) {

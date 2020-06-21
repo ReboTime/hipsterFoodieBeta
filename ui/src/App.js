@@ -1,14 +1,17 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, responsiveFontSizes } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Blog from './components/Blog';
 import Article from './components/Article';
 import CMS from './components/CMS';
 
-const theme = createMuiTheme({
+let theme = createMuiTheme({
+	typography: {
+		fontSize: 12,
+	},
 	palette: {
 		// primary: {
 		// 	main: '#4ecc6f',
@@ -21,7 +24,22 @@ const theme = createMuiTheme({
 		},
 	},
 	spacing: 4,
+	overrides: {
+		// Style sheet name ⚛
+		MuiCard: {
+		  // Name of the rule
+		  root: {
+			background: 'linear-gradient(49deg, rgba(241,250,149,0.5) 0%, rgba(255,246,217,0.5) 36%, rgba(255,255,255,1) 100%)',
+			maxWidth: "95%",
+		  },
+		  text: {
+			// Some CSS
+			color: 'white',
+		  },
+		},
+	  },
 });
+theme = responsiveFontSizes(theme, { factor: 5 }); // only works on Typography h1-6
 console.log(theme);
 function App() {
 	return (

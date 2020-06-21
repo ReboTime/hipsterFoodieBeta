@@ -20,6 +20,7 @@ export default function Blog() {
 
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [allArticles, setAllArticles] = useState([]);
 	const [articles, setArticles] = useState([]);
 	const [displayedArticles, setDisplayedArticles] = useState([]);
 	const [lastIndex, setLastIndex] = useState(0);
@@ -28,7 +29,21 @@ export default function Blog() {
 	const [snackOpen, setSnackOpen] = useState(false);
 
 	function handleSearchInputChange(value) {
+		console.log(value);
 		setSearchInput(value);
+		if (value.length > 3) {
+			setArticles(
+				articles.filter((article) => {
+					return JSON.stringify(article).toLowerCase().match(value.toLowerCase()) !== null;
+				}),
+			);
+			setLastIndex(0);
+			setHasMore(true);
+		} else {
+			setArticles(allArticles);
+			setLastIndex(0);
+			setHasMore(true);
+		}
 	}
 
 	function toggleSnackbar() {
@@ -56,6 +71,7 @@ export default function Blog() {
 						setDisplayedArticles(filteredArticles.slice(0,5));
 					}
 					setArticles(filteredArticles);
+					setAllArticles(filteredArticles);
 					setIsLoaded(true);
 				},
 				// Note: it's important to handle errors here
@@ -92,15 +108,6 @@ export default function Blog() {
 			</Typography>
 		</Grid>
 	);
-
-	if (searchInput.length > 3) {
-		setDisplayedArticles(
-			displayedArticles.filter((article) => {
-				return JSON.stringify(article).toLowerCase().match(searchInput.toLowerCase()) !== null;
-
-			}),
-		);
-	}
 
 	return (
 		<div className={classes.extraPadding}>

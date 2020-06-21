@@ -25,15 +25,6 @@ import 'react-awesome-slider/dist/styles.css';
 import './BlogPost.css';
 
 const useStyles = makeStyles((theme) => ({
-	root: {
-		maxWidth: '95%',
-		background:
-			'linear-gradient(49deg, rgba(241,250,149,0.5) 0%, rgba(255,246,217,0.5) 36%, rgba(255,255,255,1) 100%)',
-	},
-	media: {
-		height: 0,
-		paddingTop: '56.25%', // 16:9
-	},
 	expand: {
 		transform: 'rotate(0deg)',
 		transition: theme.transitions.create('transform', {
@@ -43,14 +34,8 @@ const useStyles = makeStyles((theme) => ({
 	expandOpen: {
 		transform: 'rotate(180deg)',
 	},
-	avatar: {
-		backgroundColor: red[500],
-	},
 	pushToRight: {
 		marginLeft: 'auto',
-	},
-	ul: {
-		justifyContent: 'center',
 	},
 	facebookButton: {
 		display: 'flex',
