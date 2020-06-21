@@ -28,7 +28,7 @@ export default function BlogPostEditor() {
         desc: "",
         published: false
     };
-    const apiHost = process.env.NODE_ENV === "development" ? 'http://localhost:5000' : '';
+    const apiHost = process.env.NODE_ENV === "development" ? 'http://192.168.100.32:5000' : '';
     const [article, setArticle] = useState("0");
     const [articles, setArticles] = useState([]);
     const [articleData, setArticleData] = useState(newPost);
@@ -172,7 +172,7 @@ export default function BlogPostEditor() {
             spacing={3}
             justify={"center"}
             alignContent={"center"}
-            style={{ width: '98vw', height: '100vh', textAlign: "center" }}
+            style={{ width: '98vw', textAlign: "center" }}
             onClick={removePlaceFocus}
         >
             <Grid item xs={9} style={{ marginTop: 20 }}>
@@ -221,12 +221,13 @@ export default function BlogPostEditor() {
 
                 />
                 <LocationOnIcon
-                    style={{ position: "relative", top: -40, cursor: "pointer" }}
+                    style={{ position: "absolute", height: 50 , cursor: "pointer" }}
                     onClick={loadMap}
                 />
             </Grid>
             <Grid item xs={9}>
-                <ImageUpload articleId={articleData.id} img={articleData.img} updateImages={updateImages}/>
+                { articleData !== undefined && articleData.id > 0
+                && <ImageUpload articleId={articleData.id} img={articleData.img} updateImages={updateImages}/> }
             </Grid>
             <Grid item xs={9}>
                 <TextField
@@ -265,7 +266,8 @@ export default function BlogPostEditor() {
                 <Button
                     variant={"outlined"}
                     color={"secondary"}
-                    onClick={() => setArticleData({...articleData, published: !articleData.published})}
+                    onClick={() => setArticleData({...articleData, published: !articleData.published, date: new Date()})}
+                    style={{ marginBottom: 30, marginTop: 20 }}
                 >
                     {articleData.published ? "Unpublish" : "Publish"}
                 </Button>

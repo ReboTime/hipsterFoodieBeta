@@ -5,15 +5,20 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import ImageUploader from "react-images-upload";
 import Cookies from "cookies-js";
+import { ReactSortable } from "react-sortablejs";
 
 export default function ImageUpload(props) {
     const [savedImages, setSavedImages] = useState(props.img);
+    const [dragImages, setDragImages] = useState([]);
     const [showImageModal, setShowImageModal] = useState(false);
     const imageDir = "https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/images/";
-    const apiHost = process.env.NODE_ENV === "development" ? 'http://localhost:5000' : '';
+    const apiHost = process.env.NODE_ENV === "development" ? 'http://192.168.100.32:5000' : '';
 
     useEffect(() => {
         setSavedImages(props.img);
+        setDragImages(props.img.map((i, index) => {
+            return {id: index, name: i}
+        }));
     }, [props.img])
 
     useEffect(() => {
@@ -22,6 +27,21 @@ export default function ImageUpload(props) {
         }
     }, [ savedImages ])
 
+    useEffect(() => {
+        let drag = dragImages.map(image => image.name);
+        if (savedImages.length > 0 && !compareArrays(drag, savedImages)) {
+            setSavedImages(drag);
+        }
+    }, [dragImages])
+
+    const compareArrays = (a, b) => {
+        let result = true;
+        if (a.length !== b.length) return false;
+        a.forEach((value, index) => {
+            if(value !== b[index]) result = false;
+        });
+        return result;
+    }
     const uploadPicture = (picture, fileName) => {
         let opt = {
             method: 'POST',
@@ -63,15 +83,14 @@ export default function ImageUpload(props) {
             }
         });
         savedImages.forEach(savedImage => {
-           if (!files.includes(savedImage)) {
+            if (!files.includes(savedImage)) {
                 deletePicture(savedImage).then(() => {
-                   console.log("deleted file " + savedImage + " with index " + (images.indexOf(savedImage)));
-               });
-               images.splice(savedImages.indexOf(savedImage), 1);
-           }
+                    console.log("deleted file " + savedImage + " with index " + (images.indexOf(savedImage)));
+                });
+                images.splice(savedImages.indexOf(savedImage), 1);
+            }
         });
         setSavedImages(images);
-        console.log(images);
     };
 
     const closeImageModal = () => {
@@ -80,8 +99,16 @@ export default function ImageUpload(props) {
 
     return (
         <div>
-            <Button onClick={() => setShowImageModal(true)}>
-                Edit Images
+            { dragImages !== undefined && dragImages.length > 0 && (
+                <div>
+                    <ReactSortable list={dragImages} setList={setDragImages}>
+                        { dragImages.map(image => <img alt='' key={image.id} src={image.name} height={100} style={{ marginRight: 10 }}/>)}
+                    </ReactSortable>
+                    { dragImages.length > 1 && <p style={{ fontSize: '0.7rem' }}>(drag images to change order)</p>}
+                </div>)
+            }
+            <Button onClick={() => setShowImageModal(true)} variant="outlined">
+                Upload Images
             </Button>
             <Dialog
                 open={showImageModal}
@@ -89,6 +116,9 @@ export default function ImageUpload(props) {
                 onEscapeKeyDown={closeImageModal}
                 fullWidth={true}
             >
+                <div>
+                    <span onClick={closeImageModal} style={{ float: "right" , margin: '10px 10px 0 0', cursor: "pointer" }}>X</span>
+                </div>
                 <DialogTitle id="dialog-title" style={{ textAlign: "center"}}>
                     Post images
                 </DialogTitle>
@@ -97,7 +127,7 @@ export default function ImageUpload(props) {
                         withIcon={true}
                         withPreview={true}
                         defaultImages={props.img}
-                        label="Baga poze"
+                        label=""
                         onChange={onDrop}
                         imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                         maxFileSize={15242880}
