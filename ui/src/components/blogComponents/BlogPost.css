@@ -13,3 +13,7 @@
     --loader-bar-color: #851515;
     --loader-bar-height: 6px;
     }
+
+.awssld__content img {
+    object-fit: fill;
+}
