@@ -14,10 +14,6 @@
 	--loader-bar-height: 6px;
 }
 
-.awssld__content img {
-	object-fit: fill;
-}
-
 @media (min-width: 600px) {
 	.aws-btn {
 		padding: 16px;

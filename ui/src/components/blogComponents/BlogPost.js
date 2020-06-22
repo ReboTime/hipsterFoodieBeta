@@ -105,7 +105,7 @@ export default function BlogPost(props) {
 				subheader={formatDate()}
 			/>
 			{/* IMAGE CAROUSEL */}
-			<AwesomeSlider className='aws-btn' bullets={false}>
+			<AwesomeSlider bullets={false}>
 				{props.article.img.length > 0 ? (
 					props.article.img.map((link, arrayIndex) => (
 						<div key={arrayIndex} data-src={link} />
@@ -117,25 +117,25 @@ export default function BlogPost(props) {
 			<CardContent className={classes.cardContent}>
 				<Grid container justify='space-between' alignItems='center' spacing={3}>
 					<Grid item xs={12}>
+						{/* LINK TO GOOGLE MAPS */}
+						<Box className={classes.mapBox}>
+							<Typography variant='body2' align='right' component='span'>
+								See map:
+							</Typography>
+							<IconButton
+								component='a'
+								className={classes.mapButton}
+								href={formatGoogleLink()}
+								target='_blank'>
+								<RoomTwoToneIcon fontSize='large' />
+							</IconButton>
+						</Box>
 						<Typography
 							variant='subtitle2'
 							align='justify'
 							color='textSecondary'
 							component='p'
 							style={{ marginBottom: '10px' }}>
-							{/* LINK TO GOOGLE MAPS */}
-							<Box className={classes.mapBox}>
-								<Typography variant='body2' align='right' component='p'>
-									See map:
-								</Typography>
-								<IconButton
-									component='a'
-									className={classes.mapButton}
-									href={formatGoogleLink()}
-									target='_blank'>
-									<RoomTwoToneIcon fontSize='large' />
-								</IconButton>
-							</Box>
 							TLDR: {props.article.tldr}
 						</Typography>
 					</Grid>

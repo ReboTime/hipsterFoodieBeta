@@ -9,12 +9,45 @@ import {
 	InputAdornment,
 	TextField,
 	Typography,
+	makeStyles,
 } from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 
+const useStyles = makeStyles((theme) => ({
+	fixInCorner: {
+		position: 'fixed',
+		top: '0',
+		right: '24px',
+		
+		'@media (min-width:600px)': {
+			padding: '0',
+			position: 'fixed',
+			top: '16px',
+			right: '48px',
+		},
+		'@media (min-width:960px)': {
+			position: 'fixed',
+			padding: '8px',
+			top: '30px',
+			right: '50px',
+			background: 'rgba( 100, 100, 100, 0.1)',
+		},
+	},
+	searchPaper: {
+		'@media (min-width:600px)': {
+			paddingTop: '20px',
+			paddingBottom: '10px',
+		},
+		'@media (min-width:960px)': {
+			paddingTop: '30px',
+			paddingBottom: '30px',
+		},
+		opacity: '0.9',
+	},
+}));
+
 export default function SearchBlog(props) {
-	const theme = useTheme();
+	const classes = useStyles();
 
 	const [searchOpen, setSearchOpen] = useState(false);
 
@@ -31,7 +64,7 @@ export default function SearchBlog(props) {
 			<IconButton
 				variant='outlined'
 				onClick={toggleDrawer}
-				className={theme.props.fixInCorner}
+				className={classes.fixInCorner}
 				color='primary'>
 				<SearchIcon fontSize='large' />
 			</IconButton>
@@ -42,7 +75,7 @@ export default function SearchBlog(props) {
 		<div>
 			<Modal open={searchOpen} onClose={() => setSearchOpen(!searchOpen)}>
 				<Slide in={searchOpen} timeout={700} direction={'down'}>
-					<Paper className={theme.props.searchPaper}>
+					<Paper className={classes.searchPaper}>
 						<Grid container justify='center'>
 							<Grid item xs={10}>
 								<Typography variant='h4' color='initial'>

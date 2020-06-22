@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, Typography } from '@material-ui/core';
+import { Card, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-	box: {
+	titleCard: {
 		[theme.breakpoints.up('xs')]: {
 			paddingTop: '20px',
 			paddingBottom: '20px',
@@ -23,13 +23,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Title() {
 	const classes = useStyles();
 	return (
-		<Box className={classes.box}>
-			<Typography variant='h3' color='initial' align='center' gutterBottom='true'>
-				Hipster Foodie Beta
-			</Typography>
-			<Typography variant='subtitle2' color='initial'>
-				Half webDev, half chef, 100% geek. You're welcome!
-			</Typography>
-		</Box>
+		<Card variant='elevation' elevation={10} className={classes.titleCard}>
+				<Typography variant='h3' color='initial' align='center' gutterBottom={true}>
+					Hipster Foodie Beta
+				</Typography>
+				<Typography variant='subtitle2' color='initial'>
+					Half webDev, half chef, 100% geek. You're welcome!
+				</Typography>
+		</Card>
 	);
 }

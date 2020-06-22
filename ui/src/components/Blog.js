@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Grid, IconButton, Typography } from '@material-ui/core';
+import { Grid, IconButton, Typography } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
 import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
@@ -118,9 +118,8 @@ export default function Blog() {
 			<Grid container spacing={4} align='center'>
 				<Grid item xs={12} container spacing={3} justify='center'>
 					<Grid item xs={12} md={9} lg={7}>
-						<Card variant='elevation' elevation={10}>
+						
 							<Title />
-						</Card>
 					</Grid>
 				</Grid>
 				{searchInput.length > 3 ? searchTitle : <div />}
@@ -149,7 +148,7 @@ export default function Blog() {
 					})}
 				</InfiniteScroll>
 			</Grid>
-			<ScrollToTop showUnder={160} style={{zIndex: 5, bottom: 20, right: 0}}>
+			<ScrollToTop showUnder={160} style={{zIndex: 5, bottom: 20, right: 28}}>
 				<IconButton>
 					<NavigationIcon />
 				</IconButton>

@@ -23,7 +23,7 @@ let theme = createMuiTheme({
 			main: '#58661f',
 		},
 		secondary: {
-			main: '#c9eec9'
+			main: '#c9eec9',
 		},
 		background: {
 			paper: '#fff',
@@ -32,30 +32,6 @@ let theme = createMuiTheme({
 	props: {
 		extraPadding: {
 			padding: '10px 8px 30px 20px',
-		},
-		fixInCorner: {
-			padding: '0',
-			'@media (min-width:600px)': {
-				position: 'fixed',
-				top: '3px',
-				right: '5px',
-			},
-			'@media (min-width:960px)': {
-				position: 'fixed',
-				top: '10px',
-				right: '10px',
-			},
-		},
-		searchPaper: {
-			'@media (min-width:600px)': {
-				paddingTop: '20px',
-				paddingBottom: '10px',
-			},
-			'@media (min-width:960px)': {
-				paddingTop: '30px',
-				paddingBottom: '30px',
-			},
-			opacity: '0.9',
 		},
 	},
 	spacing: 4,
@@ -78,9 +54,7 @@ let theme = createMuiTheme({
 				},
 			},
 		},
-		// Style sheet name
 		MuiCard: {
-			// Name of the rule
 			root: {
 				background: 'linear-gradient(120deg, #f3fcd2 0%, #eeeeff 100%)',
 				maxWidth: '95%',
@@ -90,10 +64,6 @@ let theme = createMuiTheme({
 				'@media (min-width:960px)': {
 					padding: '3% 6%',
 				},
-			},
-			text: {
-				// Some CSS
-				color: 'white',
 			},
 		},
 		MuiSvgIcon: {

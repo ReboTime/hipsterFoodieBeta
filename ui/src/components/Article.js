@@ -19,8 +19,6 @@ export default function Article() {
 	// the dynamic pieces of the URL.
 	let { url } = useParams();
 	const [article, setArticle] = useState();
-	const [error, setError] = useState(null);
-	const [isLoaded, setIsLoaded] = useState(false);
 	const [snackOpen, setSnackOpen] = useState(false);
 
 	function toggleSnackbar() {
@@ -32,18 +30,10 @@ export default function Article() {
 			.then((res) => res.json())
 			.then(
 				(result) => {
-					setIsLoaded(true);
 					setArticle(result.articles.find((post) => post.url === url));
 				},
-				// Note: it's important to handle errors here
-				// instead of a catch() block so that we don't swallow
-				// exceptions from actual bugs in components.
-				(error) => {
-					setIsLoaded(true);
-					setError(error);
-				},
 			);
-	}, []);
+	}, [url]);
 	let blogpost = article ? (
 		<BlogPost article={article} toggleSnackbar={toggleSnackbar}/>
 	) : (
