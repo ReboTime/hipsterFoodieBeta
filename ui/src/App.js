@@ -56,7 +56,7 @@ let theme = createMuiTheme({
 		},
 		MuiCard: {
 			root: {
-				background: 'linear-gradient(120deg, #f3fcd2 0%, #eeeeff 100%)',
+				background: 'linear-gradient(120deg, #fff 0%, #f3fcd2 100%)',
 				maxWidth: '95%',
 				'@media (min-width:600px)': {
 					padding: '2% 4%',
