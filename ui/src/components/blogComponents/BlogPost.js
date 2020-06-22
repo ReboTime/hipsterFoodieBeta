@@ -1,10 +1,19 @@
-import React, {useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import {Card, CardActions, CardContent, CardHeader, Collapse, Grid, IconButton, Typography,} from '@material-ui/core';
+import {
+	Card,
+	CardActions,
+	CardContent,
+	CardHeader,
+	Collapse,
+	Grid,
+	IconButton,
+	Typography,
+} from '@material-ui/core';
 // ICON IMPORTS
 import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
-import {FacebookIcon, FacebookShareButton} from 'react-share';
+import { FacebookIcon, FacebookShareButton } from 'react-share';
 import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyTwoTone';
 import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 import RatingIcons from './RatingIcons';
@@ -36,6 +45,11 @@ const useStyles = makeStyles((theme) => ({
 		backgroundSize: 'cover',
 		backgroundPosition: 'center',
 	},
+	articleTitle: {
+		[theme.breakpoints.up('md')]: {
+			padding: '0 17%',
+		},
+	},
 }));
 
 export default function BlogPost(props) {
@@ -43,15 +57,10 @@ export default function BlogPost(props) {
 	const [expanded, setExpanded] = useState(false);
 	const formattedUrl = window.location.origin + '/post/' + props.article.url;
 
-  // FORMAT DATE FOR DISPLAY
+	// FORMAT DATE FOR DISPLAY
 	function formatDate() {
 		const date = new Date(props.article.date);
-		return 'Visited ' +
-			date.getFullYear() +
-			'-' +
-			('0' + (date.getMonth() + 1)).slice(-2) +
-			'-' +
-			('0' + date.getDate()).slice(-2);
+		return `from ${date.toDateString()}`;
 	}
 
 	// FORMAT GOOGLE LINK FOR MAP BUTTON
@@ -77,17 +86,17 @@ export default function BlogPost(props) {
 	return (
 		<Card className={classes.root} variant='elevation' elevation={10}>
 			<CardHeader
-				title={<Typography variant='h5'>{props.article.title}</Typography>}
+				title={<Typography variant='h5' className={classes.articleTitle}>{props.article.title}</Typography>}
 				subheader={formatDate()}
 			/>
 			{/* IMAGE CAROUSEL */}
 			<AwesomeSlider className='aws-btn' bullets={false}>
 				{props.article.img.length > 0 ? (
 					props.article.img.map((link, arrayIndex) => (
-						<div key={arrayIndex} data-src={link}/>
+						<div key={arrayIndex} data-src={link} />
 					))
 				) : (
-					<div data-src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg'/>
+					<div data-src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg' />
 				)}
 			</AwesomeSlider>
 			<CardContent>
@@ -121,9 +130,7 @@ export default function BlogPost(props) {
 			<CardActions disableSpacing>
 				{/* "SHARE ON" LINKS TO FACEBOOK, OR COPY TEXT TO CLIPBOARD */}
 				<Typography variant='body2'>Share</Typography>
-				<FacebookShareButton
-					className={classes.facebookButton}
-					url={formattedUrl}>
+				<FacebookShareButton className={classes.facebookButton} url={formattedUrl}>
 					<FacebookIcon size={25} borderRadius={8} />
 				</FacebookShareButton>
 				<Typography variant='body2'>Copy link</Typography>
@@ -145,7 +152,10 @@ export default function BlogPost(props) {
 			</CardActions>
 			<Collapse in={expanded} timeout='auto' unmountOnExit>
 				<CardContent>
-					<div style={{ textAlign: "left" }} dangerouslySetInnerHTML={{__html: props.article.desc}} />
+					<div
+						style={{ textAlign: 'left' }}
+						dangerouslySetInnerHTML={{ __html: props.article.desc }}
+					/>
 				</CardContent>
 			</Collapse>
 		</Card>

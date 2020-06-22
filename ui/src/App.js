@@ -11,35 +11,48 @@ import CMS from './components/CMS';
 let theme = createMuiTheme({
 	typography: {
 		fontSize: 12,
+		fontFamily: ['Ubuntu', 'Roboto', 'Arial', 'sans-serif'].join(','),
+		subtitle2: {
+			'@media (min-width:600px)': {fontSize: ".9rem"},
+			'@media (min-width:9600px)': {fontSize: "1rem"},
+			'@media (min-width:1280px)': {fontSize: "1.3rem"}
+		}
 	},
 	palette: {
-		// primary: {
-		// 	main: '#4ecc6f',
-		// },
-		// secondary: {
-		// 	main: '#73deb0',
-		// },
+		primary: {
+			main: '#58661f',
+		},
 		background: {
-			default: '#fff',
+			paper: '#fff',
 		},
 	},
 	spacing: 4,
 	overrides: {
-		// Style sheet name ⚛
-		MuiCard: {
-		  // Name of the rule
-		  root: {
-			background: 'linear-gradient(49deg, rgba(241,250,149,0.5) 0%, rgba(255,246,217,0.5) 36%, rgba(255,255,255,1) 100%)',
-			maxWidth: "95%",
-		  },
-		  text: {
-			// Some CSS
-			color: 'white',
-		  },
+		MuiCssBaseline: {
+			'@global': {
+				body: {
+					background: 'linear-gradient(120deg, #ebffb3 0%, #e1ffe2 100%)',
+				},
+			},
 		},
-	  },
+		// Style sheet name
+		MuiCard: {
+			// Name of the rule
+			root: {
+				background: 'linear-gradient(120deg, #f3fcd2 0%, #eeeeff 100%)',
+				maxWidth: '95%',
+			},
+			text: {
+				// Some CSS
+				color: 'white',
+			},
+		},
+	},
 });
 theme = responsiveFontSizes(theme, { factor: 5 }); // only works on Typography h1-6
+// theme.typography.subtitle2 = {
+// 	[theme.breakpoints.up('md')]: { fontSize: '2.4rem' },
+// };
 console.log(theme);
 function App() {
 	return (

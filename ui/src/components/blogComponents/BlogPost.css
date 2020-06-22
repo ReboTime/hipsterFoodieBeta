@@ -1,19 +1,31 @@
 .aws-btn {
-    --slider-height-percentage: 62%;
-    --slider-transition-duration: 200ms;
-    --organic-arrow-thickness: 4px;
-    --organic-arrow-border-radius: 0px;
-    --organic-arrow-height: 40px;
-    --organic-arrow-color: #26456f;
-    --control-button-width: 10%;
-    --control-button-height: 25%;
-    --control-button-background: transparent;
-    --control-bullet-color: #fafafa;
-    --control-bullet-active-color: #d5d5d5;
-    --loader-bar-color: #851515;
-    --loader-bar-height: 6px;
-    }
+	--slider-height-percentage: 56%;
+	--slider-transition-duration: 200ms;
+	--organic-arrow-thickness: 4px;
+	--organic-arrow-border-radius: 0px;
+	--organic-arrow-height: 40px;
+	--organic-arrow-color: #e4efff;
+	--control-button-width: 10%;
+	--control-button-height: 25%;
+	--control-button-background: transparent;
+	--control-bullet-color: #fafafa;
+	--control-bullet-active-color: #d5d5d5;
+	--loader-bar-color: #889b43;
+	--loader-bar-height: 6px;
+}
 
 .awssld__content img {
-    object-fit: fill;
+	object-fit: fill;
+}
+
+@media (min-width: 960px) {
+	.aws-btn {
+		width: 90%;
+	}
+}
+
+@media (min-width: 1280px) {
+	.aws-btn {
+		width: 80%;
+	}
 }
