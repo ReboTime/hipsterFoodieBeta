@@ -1,19 +1,19 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Cookies from 'cookies-js';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Grid from "@material-ui/core/Grid";
-import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import RatingIcons from "../blogComponents/RatingIcons";
 import 'react-google-places-autocomplete/src/assets/index.css';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import ImageUpload from "./ImageUpload";
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
+import {ContentState, convertToRaw, EditorState} from 'draft-js';
+import {Editor} from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
+import GoogleMaps from "./GooglePlaceSelector";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export default function BlogPostEditor() {
     const newPost = {
@@ -23,7 +23,7 @@ export default function BlogPostEditor() {
         url: "",
         img: [],
         tldr: "",
-        location: "",
+        location: "Hipster Foodie Beta",
         ratings: {
             star: 0,
             price: 0,
@@ -34,11 +34,9 @@ export default function BlogPostEditor() {
         published: false
     };
     const apiHost = process.env.NODE_ENV === "development" ? 'http://192.168.100.32:5000' : '';
-    const [article, setArticle] = useState("0");
     const [articles, setArticles] = useState([]);
     const [articleData, setArticleData] = useState(newPost);
     const [editorState, setEditorState] = useState(EditorState.createEmpty);
-    const places = useRef(null);
 
     useEffect(() => {
         fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json')
@@ -62,38 +60,25 @@ export default function BlogPostEditor() {
         articleData.desc
     ])
 
-    useEffect(() => {
-        let label = places.current.children[0];
-        let div  = places.current.children[1];
-        let legend = div.children[1].children[0];
-        if (articleData.location !== '' && articleData.location !== undefined) {
-            label.classList.add("MuiInputLabel-shrink");
-            legend.classList.add("PrivateNotchedOutline-legendNotched-4");
+    const checkUrl = url => {
+        let count = 2;
+        let aTemp = articles.filter(a => a.url === url);
+        if (aTemp.length > 0 && aTemp[0].id !== articleData.id) {
+            let tempUrl = url + "-";
+            do {
+                url = tempUrl + count;
+                count++;
+                aTemp = articles.filter(a => a.url === url);
+            } while (aTemp.length > 0 && aTemp[0].id !== articleData.id)
         }
-        removePlaceFocus(undefined);
-    }, [articleData.location])
+        return url;
+    };
 
-    function changeArticle(event) {
-        let id = +event.currentTarget.value;
-        if (id === 0) {
-            setArticleData(newPost);
-        } else {
-            let article = articles.filter(a => a.id === id)[0];
-            setArticleData(article);
-            const contentBlock = htmlToDraft(article.desc);
-            if (contentBlock) {
-                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-                const editorState = EditorState.createWithContent(contentState);
-                setEditorState(editorState);
-            }
-        }
-        setArticle(id + "");
-    }
-
-    function updateArticle() {
+    const updateArticle = () => {
         if (articleData.title === '') {
             return;
         }
+        // no change
         if (articles.filter(a => a === articleData).length > 0) {
             return;
         }
@@ -101,7 +86,7 @@ export default function BlogPostEditor() {
             .replace(/[\u0300-\u036f]/g, "")
             .replace(/\s+/g, "-");
         let newData = articleData;
-        newData.url = url.toLowerCase();
+        newData.url = checkUrl(url.toLowerCase());
         setArticleData(newData);
         const opt = {
             method: 'POST',
@@ -114,74 +99,55 @@ export default function BlogPostEditor() {
             .then(data => {
                 setArticles(data.articles);
                 if (articleData.id === 0) {
-                    setArticle(data.articles[data.articles.length - 1].id);
                     setArticleData(data.articles[data.articles.length - 1]);
                 } else {
-                    setArticleData(data.articles.filter(a => a.id === +article)[0]);
+                    setArticleData(data.articles.filter(a => a.id === articleData.id)[0]);
                 }
             });
     }
 
-    function updateRating(icon, value) {
+    const initDescEditor = text => {
+        const contentBlock = htmlToDraft(text);
+        if (contentBlock) {
+            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+            const editorState = EditorState.createWithContent(contentState);
+            setEditorState(editorState);
+        }
+    }
+
+    const changeArticle = (event, value) => {
+        let article =  value;
+        if (typeof value === 'string') {
+            article = {...newPost, title: value, id: articles.length + 1};
+            setArticles([...articles, article]);
+        }
+        setArticleData(article);
+        initDescEditor(article.desc);
+    }
+
+    const updateRating = (icon, value) => {
         let ratings = articleData.ratings;
         ratings[icon] = value;
         setArticleData({...articleData, ratings: ratings});
     }
 
-    function updateLocation(data) {
+    const updateLocation = data => {
         setArticleData( {...articleData, location: data.description, googlePlaceId: data.place_id});
     }
 
-    function loadMap() {
+    const loadMap = () => {
         if (articleData.location === '' && articleData.googlePlaceId === '') {
             return;
         }
-        //window.open("https://www.google.com/maps/place/?q=place_id:" + articleData.googlePlaceId);
         window.open("https://www.google.com/maps/search/?api=1&query="
             + articleData.location + "&query_place_id=" + articleData.googlePlaceId);
     }
 
-    function saveCustomLocation() {
-        let place = places.current.children[1].children[0].children[0].value;
-        if (articleData.location !== place) {
-            setArticleData({...articleData, location: place, googlePlaceId: ''});
-        }
-    }
-
-    function addPlaceFocus(event) {
-        let label = event.currentTarget.children[0];
-        let div  = event.currentTarget.children[1];
-        let legend = div.children[1].children[0];
-        label.classList.add("MuiInputLabel-shrink");
-        label.classList.add("Mui-focused");
-        div.classList.add("Mui-focused");
-        legend.classList.add("PrivateNotchedOutline-legendNotched-4");
-    }
-
-    function removePlaceFocus(event) {
-        if (event === undefined || !places.current.contains(event.target)) {
-            let label = places.current.children[0];
-            let div  = places.current.children[1];
-            let input = div.children[0].children[0];
-            if (input === document.activeElement) {
-                return;
-            }
-            let legend = div.children[1].children[0];
-            if (articleData.location === '' || articleData.location === undefined) {
-                label.classList.remove("MuiInputLabel-shrink");
-                legend.classList.remove("PrivateNotchedOutline-legendNotched-4");
-            }
-            label.classList.remove("Mui-focused");
-            div.classList.remove("Mui-focused");
-        }
-    }
-
-    const updateImages = (images) => {
+    const updateImages = images => {
         setArticleData({...articleData, img: images});
     }
 
-    const updateDescription = (event, editor) => {
-        console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));
+    const updateDescription = () => {
         setArticleData({...articleData, desc: draftToHtml(convertToRaw(editorState.getCurrentContent()))});
     }
 
@@ -192,24 +158,28 @@ export default function BlogPostEditor() {
             justify={"center"}
             alignContent={"center"}
             style={{ width: '98vw', textAlign: "center" }}
-            onClick={removePlaceFocus}
         >
-            <Grid item xs={9} style={{ marginTop: 20 }}>
+            <Grid item xs={11} md={9} style={{ marginTop: 20 }}>
                 <h1>HFB CMS</h1>
                 <Button onClick={() => window.location = '/'} variant={"outlined"}>Back to site</Button>
             </Grid>
-            <Grid item xs={9} style={{ marginTop: 10 }} >
-                I want to edit <Select
-                native
-                value={article}
-                onChange={changeArticle}
-                style={{ marginLeft: 20, minWidth: '200px' }}
-            >
-                <option value="0">New Post</option>
-                { articles !== undefined && articles.map(a => <option key={a.id} value={a.id}>{a.title}</option>) }
-            </Select>
+            <Grid item xs={11} md={9} style={{ marginTop: 10 }} >
+                <Autocomplete
+                    freeSolo={true}
+                    getOptionLabel={(option) => option.title}
+                    options={articles.sort((a, b) => b.id - a.id)}
+                    value={newPost}
+                    onChange={changeArticle}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label="Select existing post or create a new one"
+                            margin="normal"
+                            variant="outlined"
+                            InputProps={{ ...params.InputProps, type: 'search' }}
+                        />)}/>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={11} md={9}>
                 <TextField
                     label="Title"
                     fullWidth={true}
@@ -221,34 +191,21 @@ export default function BlogPostEditor() {
                     variant="outlined"
                 />
             </Grid>
-            <Grid item xs={9} style={{ textAlign: "right" }} onBlur={saveCustomLocation}>
-                <TextField
-                    ref={places}
-                    fullWidth={true}
-                    label="Place"
-                    variant="outlined"
-                    onClick={addPlaceFocus}
-                    InputProps={{
-                        inputComponent: GooglePlacesAutocomplete,
-                        inputProps: {
-                            initialValue: articleData.location,
-                            onSelect: updateLocation,
-                            placeholder: "",
-                            inputStyle: {width: '100%', padding: '18.5px 14px'}
-                        }
-                    }}
-
+            <Grid item xs={11} md={9} style={{ textAlign: "right" }}>
+                <GoogleMaps
+                    location={articleData.location}
+                    updateLocation={updateLocation}
                 />
                 <LocationOnIcon
-                    style={{ position: "absolute", height: 50 , cursor: "pointer" }}
+                    style={{ position: "relative", cursor: "pointer", top: '-36px', right: '-20px' }}
                     onClick={loadMap}
                 />
             </Grid>
-            <Grid item xs={9}>
-                { articleData !== undefined && articleData.id > 0
+            <Grid item xs={11} md={9}>
+                { articleData.id > 0
                 && <ImageUpload articleId={articleData.id} img={articleData.img} updateImages={updateImages}/> }
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={11} md={9}>
                 <TextField
                     label="TLDR"
                     fullWidth={true}
@@ -263,10 +220,10 @@ export default function BlogPostEditor() {
                     variant="outlined"
                 />
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={11} md={9}>
                 <RatingIcons ratings={articleData.ratings} readOnly={false} updateRating={updateRating}/>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={11} md={9}>
                 <Editor
                     editorState={editorState}
                     toolbarClassName="toolbarClassName"
@@ -278,22 +235,19 @@ export default function BlogPostEditor() {
                         separator: ' ',
                         trigger: '#',
                     }}
-                />
-               {/* <TextField
-                    label="Description"
-                    fullWidth={true}
-                    multiline={true}
-                    rows={5}
-                    rowsMax={100}
-                    value={articleData.desc}
-                    onChange={event => {
-                        setArticleData({...articleData, desc: event.currentTarget.value} );
+                    toolbar={{
+                        options: ['list', 'emoji', 'inline', 'history' ],
+                        inline: {
+                            inDropdown: false,
+                            className: undefined,
+                            component: undefined,
+                            dropdownClassName: undefined,
+                            options: ['bold', 'italic', 'underline'],
+                        },
                     }}
-                    onBlur={updateArticle}
-                    variant="outlined"
-                />*/}
+                />
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={11} md={9}>
                 <Button
                     variant={"outlined"}
                     color={"secondary"}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Grid, IconButton, Paper, Typography } from '@material-ui/core';
+import { Card, Grid, IconButton, Typography } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
 import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
@@ -14,7 +14,6 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 export default function Blog() {
 	const theme = useTheme();
 
-	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [allArticles, setAllArticles] = useState([]);
 	const [articles, setArticles] = useState([]);
@@ -81,15 +80,8 @@ export default function Blog() {
 					setArticles(filteredArticles);
 					setAllArticles(filteredArticles);
 					setIsLoaded(true);
-				},
-				// Note: it's important to handle errors here
-				// instead of a catch() block so that we don't swallow
-				// exceptions from actual bugs in components.
-				(error) => {
-					setIsLoaded(true);
-					setError(error);
-				},
-			);
+				}
+			).catch(() => setIsLoaded(true));
 	}, []);
 
 	function loadArticles() {
@@ -157,7 +149,7 @@ export default function Blog() {
 					})}
 				</InfiniteScroll>
 			</Grid>
-			<ScrollToTop showUnder={160} style={{zIndex: 5, bottom: 20, right: 5}}>
+			<ScrollToTop showUnder={160} style={{zIndex: 5, bottom: 20, right: 0}}>
 				<IconButton>
 					<NavigationIcon />
 				</IconButton>
