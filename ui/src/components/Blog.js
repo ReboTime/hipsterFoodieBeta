@@ -95,7 +95,6 @@ export default function Blog() {
 
 	function loadArticles() {
 		console.log('loading 5 more');
-		console.log(articles);
 		let index = lastIndex + 5;
 		if (index >= articles.length) {
 			index = articles.length;
@@ -153,14 +152,10 @@ export default function Blog() {
 					})}
 				</InfiniteScroll>
 			</Grid>
-			<ScrollToTop showUnder={160} style={{
-				backgroundColor: 'white',
-				zIndex: 5000,
-				borderRadius: '20px',
-				height: '22px'
-			}}
-			>
-				<NavigationIcon />
+			<ScrollToTop showUnder={160}>
+				<IconButton>
+					<NavigationIcon />
+				</IconButton>
 			</ScrollToTop>
 			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
 		</div>

@@ -25,17 +25,17 @@ router.post('/', function(req, res) {
             json = {articles: []};
         } else {
             json = JSON.parse(data.Body.toString());
-            if (article.id === null || article.id === 0) {
-                article.id = json.articles.length + 1;
-                json.articles.push(article);
-            } else {
-                json.articles = json.articles.map(a => a.id === article.id ? article : a);
-            }
         }
+        if (article.id === null || article.id === 0) {
+            article.id = json.articles.length + 1;
+            json.articles.push(article);
+        } else {
+            json.articles = json.articles.map(a => a.id === article.id ? article : a);
+        }
+
         jsonParams.ContentType = 'application/json; charset=utf-8';
         jsonParams.ACL = 'public-read';
         jsonParams.Body = JSON.stringify(json);
-        console.log(jsonParams);
         s3.upload(jsonParams, function (err) {
             if (err) console.log(err);
             res.send(json);

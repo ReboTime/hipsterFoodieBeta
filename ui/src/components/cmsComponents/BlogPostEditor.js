@@ -9,6 +9,11 @@ import RatingIcons from "../blogComponents/RatingIcons";
 import 'react-google-places-autocomplete/src/assets/index.css';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import ImageUpload from "./ImageUpload";
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
 
 export default function BlogPostEditor() {
     const newPost = {
@@ -32,6 +37,7 @@ export default function BlogPostEditor() {
     const [article, setArticle] = useState("0");
     const [articles, setArticles] = useState([]);
     const [articleData, setArticleData] = useState(newPost);
+    const [editorState, setEditorState] = useState(EditorState.createEmpty);
     const places = useRef(null);
 
     useEffect(() => {
@@ -52,7 +58,8 @@ export default function BlogPostEditor() {
         articleData.published,
         articleData.location,
         articleData.googlePlaceId,
-        articleData.img
+        articleData.img,
+        articleData.desc
     ])
 
     useEffect(() => {
@@ -71,7 +78,14 @@ export default function BlogPostEditor() {
         if (id === 0) {
             setArticleData(newPost);
         } else {
-            setArticleData(articles.filter(a => a.id === id)[0]);
+            let article = articles.filter(a => a.id === id)[0];
+            setArticleData(article);
+            const contentBlock = htmlToDraft(article.desc);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                const editorState = EditorState.createWithContent(contentState);
+                setEditorState(editorState);
+            }
         }
         setArticle(id + "");
     }
@@ -87,7 +101,7 @@ export default function BlogPostEditor() {
             .replace(/[\u0300-\u036f]/g, "")
             .replace(/\s+/g, "-");
         let newData = articleData;
-        newData.url = url;
+        newData.url = url.toLowerCase();
         setArticleData(newData);
         const opt = {
             method: 'POST',
@@ -164,6 +178,11 @@ export default function BlogPostEditor() {
 
     const updateImages = (images) => {
         setArticleData({...articleData, img: images});
+    }
+
+    const updateDescription = (event, editor) => {
+        console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));
+        setArticleData({...articleData, desc: draftToHtml(convertToRaw(editorState.getCurrentContent()))});
     }
 
     return (
@@ -248,7 +267,19 @@ export default function BlogPostEditor() {
                 <RatingIcons ratings={articleData.ratings} readOnly={false} updateRating={updateRating}/>
             </Grid>
             <Grid item xs={9}>
-                <TextField
+                <Editor
+                    editorState={editorState}
+                    toolbarClassName="toolbarClassName"
+                    wrapperClassName="wrapperClassName MuiOutlinedInput-notchedOutline postEditor"
+                    editorClassName="editorClassName postEditorContent"
+                    onEditorStateChange={setEditorState}
+                    onBlur={updateDescription}
+                    hashtag={{
+                        separator: ' ',
+                        trigger: '#',
+                    }}
+                />
+               {/* <TextField
                     label="Description"
                     fullWidth={true}
                     multiline={true}
@@ -260,7 +291,7 @@ export default function BlogPostEditor() {
                     }}
                     onBlur={updateArticle}
                     variant="outlined"
-                />
+                />*/}
             </Grid>
             <Grid item xs={9}>
                 <Button

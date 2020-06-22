@@ -145,7 +145,7 @@ export default function BlogPost(props) {
 			</CardActions>
 			<Collapse in={expanded} timeout='auto' unmountOnExit>
 				<CardContent>
-					<Typography paragraph>{props.article.desc}</Typography>
+					<div style={{ textAlign: "left" }} dangerouslySetInnerHTML={{__html: props.article.desc}} />
 				</CardContent>
 			</Collapse>
 		</Card>
