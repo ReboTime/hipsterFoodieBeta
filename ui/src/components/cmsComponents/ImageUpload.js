@@ -11,27 +11,23 @@ const CustomComponent = forwardRef((props, ref) => {
 
 export default function ImageUpload(props) {
     const [savedImages, setSavedImages] = useState(props.img);
-    const [dragImages, setDragImages] = useState([]);
+    const [dragImages, setDragImages] = useState(props.img.map((i, index) => ({id: index, name: i})));
     const [uploading, setUploading] = useState(false);
     const imageDir = "https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/images/";
     const apiHost = process.env.NODE_ENV === "development" ? 'http://192.168.100.32:5000' : '';
 
     useEffect(() => {
-        console.log("re-rendered")
-        if (!compareArrays(savedImages, props.img)) {
-            console.log("new images")
-            setSavedImages(props.img);
-            setDragImages(props.img.map((i, index) => {
-                return {id: index, name: i}
-            }));
+        setSavedImages(props.img);
+        setDragImages(props.img.map((i, index) => ({id: index, name: i})));
+        return () => {
+            setSavedImages([]);
+            setDragImages([]);
         }
-    }, [props])
+    }, [props.img])
 
     useEffect(() => {
-        console.log("new order")
         let drag = dragImages.map(image => image.name);
         if (savedImages.length > 0 && !compareArrays(drag, savedImages)) {
-            console.log("saving new order")
             props.updateImages(drag);
         }
     }, [dragImages])
