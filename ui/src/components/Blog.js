@@ -8,7 +8,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import InfiniteScroll from 'react-infinite-scroller';
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import ScrollToTop from 'react-scroll-up';
+import NavigationIcon from '@material-ui/icons/Navigation';
 
 const useStyles = makeStyles((theme) => ({
 	extraPadding: {
@@ -152,6 +153,15 @@ export default function Blog() {
 					})}
 				</InfiniteScroll>
 			</Grid>
+			<ScrollToTop showUnder={160} style={{
+				backgroundColor: 'white',
+				zIndex: 5000,
+				borderRadius: '20px',
+				height: '22px'
+			}}
+			>
+				<NavigationIcon />
+			</ScrollToTop>
 			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
 		</div>
 	);
