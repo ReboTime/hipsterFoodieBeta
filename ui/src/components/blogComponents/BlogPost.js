@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import {
+	Box,
 	Card,
 	CardActions,
 	CardContent,
@@ -22,6 +23,35 @@ import 'react-awesome-slider/dist/styles.css';
 import './BlogPost.css';
 
 const useStyles = makeStyles((theme) => ({
+	articleTitle: {
+		[theme.breakpoints.up('md')]: {
+			padding: '0 17%',
+		},
+	},
+	share: {
+		margin: '0 0 0 3%',
+	},
+	facebookButton: {
+		display: 'flex',
+		margin: '0px 6px',
+	},
+	readMore: {
+		marginLeft: 'auto',
+	},
+	mapBox: {
+		float: 'right',
+		display: 'flex',
+		alignItems: 'center',
+		justify: 'center',
+		marginLeft: '5%',
+	},
+	mapButton: {
+		padding: '0',
+		border: '2px solid',
+		borderRadius: '4px',
+		margin: '0 4px',
+		background: theme.palette.secondary.main,
+	},
 	expand: {
 		transform: 'rotate(0deg)',
 		transition: theme.transitions.create('transform', {
@@ -30,25 +60,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	expandOpen: {
 		transform: 'rotate(180deg)',
-	},
-	pushToRight: {
-		marginLeft: 'auto',
-	},
-	facebookButton: {
-		display: 'flex',
-		margin: '0px 6px',
-	},
-	carouselDiv: {
-		width: '100%',
-		paddingTop: '50%',
-		overflow: 'hidden',
-		backgroundSize: 'cover',
-		backgroundPosition: 'center',
-	},
-	articleTitle: {
-		[theme.breakpoints.up('md')]: {
-			padding: '0 17%',
-		},
 	},
 }));
 
@@ -84,9 +95,13 @@ export default function BlogPost(props) {
 	};
 
 	return (
-		<Card className={classes.root} variant='elevation' elevation={10}>
+		<Card variant='elevation' elevation={10}>
 			<CardHeader
-				title={<Typography variant='h5' className={classes.articleTitle}>{props.article.title}</Typography>}
+				title={
+					<Typography variant='h5' className={classes.articleTitle}>
+						{props.article.title}
+					</Typography>
+				}
 				subheader={formatDate()}
 			/>
 			{/* IMAGE CAROUSEL */}
@@ -99,37 +114,43 @@ export default function BlogPost(props) {
 					<div data-src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg' />
 				)}
 			</AwesomeSlider>
-			<CardContent>
-				<Grid container alignItems='center'>
-					<Grid item xs={8}>
+			<CardContent className={classes.cardContent}>
+				<Grid container justify='space-between' alignItems='center' spacing={3}>
+					<Grid item xs={12}>
 						<Typography
-							variant='body2'
+							variant='subtitle2'
 							align='justify'
 							color='textSecondary'
 							component='p'
 							style={{ marginBottom: '10px' }}>
+							{/* LINK TO GOOGLE MAPS */}
+							<Box className={classes.mapBox}>
+								<Typography variant='body2' align='right' component='p'>
+									See map:
+								</Typography>
+								<IconButton
+									component='a'
+									className={classes.mapButton}
+									href={formatGoogleLink()}
+									target='_blank'>
+									<RoomTwoToneIcon fontSize='large' />
+								</IconButton>
+							</Box>
 							TLDR: {props.article.tldr}
 						</Typography>
 					</Grid>
-					{/* LINK TO GOOGLE MAPS */}
-					<Grid item xs={2}>
-						<Typography variant='body2' align='right' component='p'>
-							See map:
-						</Typography>
-					</Grid>
-					<Grid item xs={2}>
-						<IconButton component='a' href={formatGoogleLink()} target='_blank'>
-							<RoomTwoToneIcon fontSize='large' />
-						</IconButton>
-					</Grid>
 					{/* RATINGS COMPONENT */}
-					<RatingIcons ratings={props.article.ratings} readOnly={true} />
+					<Grid item xs={12}>
+						<RatingIcons ratings={props.article.ratings} readOnly={true} />
+					</Grid>
 				</Grid>
 			</CardContent>
 
 			<CardActions disableSpacing>
 				{/* "SHARE ON" LINKS TO FACEBOOK, OR COPY TEXT TO CLIPBOARD */}
-				<Typography variant='body2'>Share</Typography>
+				<Typography variant='body2' className={classes.share}>
+					Share
+				</Typography>
 				<FacebookShareButton className={classes.facebookButton} url={formattedUrl}>
 					<FacebookIcon size={25} borderRadius={8} />
 				</FacebookShareButton>
@@ -137,7 +158,7 @@ export default function BlogPost(props) {
 				<IconButton onClick={handleCopyLinkClick}>
 					<FileCopyTwoToneIcon />
 				</IconButton>
-				<Typography variant='body2' className={classes.pushToRight}>
+				<Typography variant='body2' className={classes.readMore}>
 					Read more:
 				</Typography>
 				<IconButton

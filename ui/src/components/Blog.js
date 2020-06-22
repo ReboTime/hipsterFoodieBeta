@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, IconButton, Typography } from '@material-ui/core';
+import { Card, Grid, IconButton, Paper, Typography } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
 import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
@@ -7,13 +7,13 @@ import SearchBlog from './blogComponents/SearchBlog';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import InfiniteScroll from 'react-infinite-scroller';
-import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ScrollToTop from 'react-scroll-up';
 import NavigationIcon from '@material-ui/icons/Navigation';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	extraPadding: {
-		padding: theme.spacing(3),
+		padding: '10px 8px 30px 20px',
 	},
 }));
 
@@ -32,11 +32,14 @@ export default function Blog() {
 
 	function handleSearchInputChange(value) {
 		if (value.length > 3) {
-			let searchArticles = allArticles.filter((article) => article.published
-				&& containsValue(article, value));
+			let searchArticles = allArticles.filter(
+				(article) => article.published && containsValue(article, value),
+			);
 			setArticles(searchArticles);
 			let displayArticles = [...searchArticles];
-			setDisplayedArticles(displayArticles.splice(0, searchArticles.length > 5 ? 5 : searchArticles.length));
+			setDisplayedArticles(
+				displayArticles.splice(0, searchArticles.length > 5 ? 5 : searchArticles.length),
+			);
 			setLastIndex(0);
 			setHasMore(searchArticles.length > 5);
 		} else {
@@ -50,9 +53,11 @@ export default function Blog() {
 	}
 
 	function containsValue(article, value) {
-		return (article.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+		return (
+			article.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
 			article.desc.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-			article.tldr.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+			article.tldr.toLowerCase().indexOf(value.toLowerCase()) !== -1
+		);
 	}
 
 	function toggleSnackbar() {
@@ -70,14 +75,14 @@ export default function Blog() {
 					const filteredArticles = result.articles
 						.filter((article) => article.published)
 						.sort((a, b) => b.date.localeCompare(a.date));
-					console.log('articles array after fetch and filter: ',filteredArticles);
+					console.log('articles array after fetch and filter: ', filteredArticles);
 					if (filteredArticles.length <= 5) {
 						setLastIndex(filteredArticles.length);
 						setDisplayedArticles(filteredArticles);
 						setHasMore(false);
 					} else {
 						setLastIndex(5);
-						setDisplayedArticles(filteredArticles.slice(0,5));
+						setDisplayedArticles(filteredArticles.slice(0, 5));
 					}
 					setArticles(filteredArticles);
 					setAllArticles(filteredArticles);
@@ -124,15 +129,21 @@ export default function Blog() {
 				searchInput={searchInput}
 				handleSearchInputChange={handleSearchInputChange}
 			/>
-			<Grid container spacing={3} align='center'>
-				<Grid item xs={12}>
-					<Title />
+			<Grid container spacing={4} align='center'>
+				<Grid item xs={12} container spacing={3} justify='center'>
+					<Grid item xs={12} md={9} lg={7}>
+						<Card variant='elevation' elevation={10}>
+							<Title />
+						</Card>
+					</Grid>
 				</Grid>
-				{searchInput.length > 3 ? searchTitle : <div/>}
+				{searchInput.length > 3 ? searchTitle : <div />}
 				<InfiniteScroll
 					element={Grid}
+					item
+					xs={12}
 					container
-					justify="center"
+					justify='center'
 					spacing={3}
 					threshold={1000}
 					initialLoad={isLoaded}
@@ -140,7 +151,7 @@ export default function Blog() {
 					hasMore={hasMore}
 					loader={
 						<Grid item xs={12} key={0}>
-							<CircularProgress size="50px" thickness={1} />
+							<CircularProgress size='50px' thickness={1} />
 						</Grid>
 					}>
 					{displayedArticles.map((article) => {
@@ -152,7 +163,7 @@ export default function Blog() {
 					})}
 				</InfiniteScroll>
 			</Grid>
-			<ScrollToTop showUnder={160}>
+			<ScrollToTop showUnder={160} style={{zIndex: 5, bottom: 20, right: 5}}>
 				<IconButton>
 					<NavigationIcon />
 				</IconButton>

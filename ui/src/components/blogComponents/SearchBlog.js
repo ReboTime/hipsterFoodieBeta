@@ -15,6 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
 	fixInCorner: {
+		padding: '0',
 		[theme.breakpoints.up('xs')]: {
 			position: 'fixed',
 			top: '3px',

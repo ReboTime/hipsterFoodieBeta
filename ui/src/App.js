@@ -13,14 +13,17 @@ let theme = createMuiTheme({
 		fontSize: 12,
 		fontFamily: ['Ubuntu', 'Roboto', 'Arial', 'sans-serif'].join(','),
 		subtitle2: {
-			'@media (min-width:600px)': {fontSize: ".9rem"},
-			'@media (min-width:9600px)': {fontSize: "1rem"},
-			'@media (min-width:1280px)': {fontSize: "1.3rem"}
-		}
+			'@media (min-width:600px)': { fontSize: '.9rem' },
+			'@media (min-width:960px)': { fontSize: '1rem' },
+			'@media (min-width:1280px)': { fontSize: '1.3rem' },
+		},
 	},
 	palette: {
 		primary: {
 			main: '#58661f',
+		},
+		secondary: {
+			main: '#c9eec9'
 		},
 		background: {
 			paper: '#fff',
@@ -31,7 +34,18 @@ let theme = createMuiTheme({
 		MuiCssBaseline: {
 			'@global': {
 				body: {
-					background: 'linear-gradient(120deg, #ebffb3 0%, #e1ffe2 100%)',
+					background: 'linear-gradient(120deg, #bfe286 0%, #80d894 100%)',
+				},
+			},
+		},
+		MuiPaper: {
+			rounded: {
+				borderRadius: '4px',
+				'@media (min-width:600px)': {
+					borderRadius: '6px',
+				},
+				'@media (min-width:960px)': {
+					borderRadius: '10px',
 				},
 			},
 		},
@@ -41,10 +55,24 @@ let theme = createMuiTheme({
 			root: {
 				background: 'linear-gradient(120deg, #f3fcd2 0%, #eeeeff 100%)',
 				maxWidth: '95%',
+				'@media (min-width:600px)': {
+					padding: '2% 4%',
+				},
+				'@media (min-width:960px)': {
+					padding: '3% 6%',
+				},
 			},
 			text: {
 				// Some CSS
 				color: 'white',
+			},
+		},
+		MuiSvgIcon: {
+			root: {
+				fontSize: '1.6rem',
+			},
+			fontSizeLarge: {
+				fontSize: '2.3rem',
 			},
 		},
 	},
