@@ -29,6 +29,35 @@ let theme = createMuiTheme({
 			paper: '#fff',
 		},
 	},
+	props: {
+		extraPadding: {
+			padding: '10px 8px 30px 20px',
+		},
+		fixInCorner: {
+			padding: '0',
+			'@media (min-width:600px)': {
+				position: 'fixed',
+				top: '3px',
+				right: '5px',
+			},
+			'@media (min-width:960px)': {
+				position: 'fixed',
+				top: '10px',
+				right: '10px',
+			},
+		},
+		searchPaper: {
+			'@media (min-width:600px)': {
+				paddingTop: '20px',
+				paddingBottom: '10px',
+			},
+			'@media (min-width:960px)': {
+				paddingTop: '30px',
+				paddingBottom: '30px',
+			},
+			opacity: '0.9',
+		},
+	},
 	spacing: 4,
 	overrides: {
 		MuiCssBaseline: {
@@ -78,9 +107,6 @@ let theme = createMuiTheme({
 	},
 });
 theme = responsiveFontSizes(theme, { factor: 5 }); // only works on Typography h1-6
-// theme.typography.subtitle2 = {
-// 	[theme.breakpoints.up('md')]: { fontSize: '2.4rem' },
-// };
 console.log(theme);
 function App() {
 	return (

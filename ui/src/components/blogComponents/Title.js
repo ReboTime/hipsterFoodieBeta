@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 			paddingTop: '60px',
 			paddingBottom: '50px',
 		},
-		textShadow: '2px 2px 4px #889b43',
+		textShadow: '1px 1px 4px #889b43',
 	},
 }));
 

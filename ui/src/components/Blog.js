@@ -5,20 +5,14 @@ import Title from './blogComponents/Title';
 import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
 import SearchBlog from './blogComponents/SearchBlog';
 import CloseIcon from '@material-ui/icons/Close';
-import { makeStyles } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import InfiniteScroll from 'react-infinite-scroller';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ScrollToTop from 'react-scroll-up';
 import NavigationIcon from '@material-ui/icons/Navigation';
 
-const useStyles = makeStyles(() => ({
-	extraPadding: {
-		padding: '10px 8px 30px 20px',
-	},
-}));
-
 export default function Blog() {
-	const classes = useStyles();
+	const theme = useTheme();
 
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
@@ -124,7 +118,7 @@ export default function Blog() {
 	);
 
 	return (
-		<div className={classes.extraPadding}>
+		<div style={theme.props.extraPadding}>
 			<SearchBlog
 				searchInput={searchInput}
 				handleSearchInputChange={handleSearchInputChange}
