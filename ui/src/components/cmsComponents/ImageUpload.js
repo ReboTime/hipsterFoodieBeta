@@ -4,9 +4,12 @@ import Cookies from "cookies-js";
 import { ReactSortable } from "react-sortablejs";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
+import DragHandleIcon from '@material-ui/icons/DragHandle';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from "@material-ui/core/IconButton";
 
 const CustomComponent = forwardRef((props, ref) => {
-    return <Grid container  spacing={3} ref={ref}>{props.children}</Grid>;
+    return <Grid container  spacing={6} ref={ref}>{props.children}</Grid>;
 });
 
 export default function ImageUpload(props) {
@@ -92,7 +95,7 @@ export default function ImageUpload(props) {
                 clearInterval(interval);
                 setUploading(false);
             }
-        }, 1000);
+        }, 2000);
     };
 
     const deleteImage = (index) => {
@@ -112,32 +115,27 @@ export default function ImageUpload(props) {
             { dragImages !== undefined && dragImages.length > 0 && (
                 <div>
                     <ReactSortable
+                        handle='.sortHandle'
                         list={dragImages}
                         setList={setDragImages}
                         tag={CustomComponent}
                     >
                         { dragImages.map(image =>
-                            <Grid item key={image.id} xs={12} md={6} lg={4}>
-                                <span
-                                    style={{ position: 'relative',
-                                        top: '10px',
-                                        right: '-10px',
-                                        background: 'white',
-                                        float: 'right',
-                                        width: '25px',
-                                        borderRadius: '20px',
-                                        cursor: 'pointer',
-                                        border: 'black solid 1px'
-                                    }}
-                                    onClick={() => deleteImage(image.id)}
-                                >
-                                    X
-                                </span>
-                                <img alt=''  src={image.name} width="100%" height={300} style={{ objectFit: 'cover'}}/>
+                            <Grid item container key={image.id} xs={12} md={6} lg={4}>
+                                <Grid item xs={11}>
+                                    <img alt=''  src={image.name} width="100%" height={300} style={{ objectFit: 'cover'}}/>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <IconButton onClick={() => deleteImage(image.id)}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                    <IconButton>
+                                        <DragHandleIcon className='sortHandle'/>
+                                    </IconButton>
+                                </Grid>
                             </Grid>
                             )}
                     </ReactSortable>
-                    { dragImages.length > 1 && <Grid xs={12} style={{ fontSize: '0.7rem' }}>(drag images to change order)</Grid>}
                 </div>
                     )
             }

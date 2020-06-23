@@ -134,7 +134,7 @@ export default function BlogPost(props) {
 							variant='subtitle2'
 							align='justify'
 							color='textSecondary'
-							component='p'
+							component='div'
 							style={{ marginBottom: '10px' }}>
 							TLDR: {props.article.tldr}
 						</Typography>

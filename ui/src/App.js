@@ -77,7 +77,6 @@ let theme = createMuiTheme({
 	},
 });
 theme = responsiveFontSizes(theme, { factor: 5 }); // only works on Typography h1-6
-console.log(theme);
 function App() {
 	return (
 		<Router>

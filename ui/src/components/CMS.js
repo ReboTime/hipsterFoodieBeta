@@ -6,11 +6,11 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 export default function CMS() {
     const [session, setSession] = useState(undefined);
     const [loading, setLoading] = useState(true);
-    const apiHost = process.env.NODE_ENV === "development" ? 'http://192.168.100.32:5000' : '';
 
     useEffect(() => {
         let cookie = Cookies.get('hfbSession');
         if (cookie !== undefined) {
+            const apiHost = process.env.NODE_ENV === "development" ? 'http://192.168.100.32:5000' : '';
             const opt = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -31,7 +31,7 @@ export default function CMS() {
         } else {
             setLoading(false);
         }
-    },[]);
+    });
 
 
     return loading ? <CircularProgress size="50px" thickness={1} style={{ position: "absolute", top: '30%', left: '48%'}} /> : session !== undefined ? <BlogPostEditor /> : <Login setSession={setSession}/>;

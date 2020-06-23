@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 let imageDir = 'images/';
 const path = require('path');
+const sharp = require('sharp');
 let AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-1'});
 let s3 = new AWS.S3({apiVersion: '2006-03-01'});
@@ -26,8 +27,8 @@ router.post('/', function(req, res) {
         } else {
             json = JSON.parse(data.Body.toString());
         }
-        if (article.id === null || article.id === 0) {
-            article.id = json.articles.length + 1;
+
+        if (json.articles.filter(a => a.id === article.id).length === 0) {
             json.articles.push(article);
         } else {
             json.articles = json.articles.map(a => a.id === article.id ? article : a);
@@ -52,7 +53,10 @@ router.post('/addImage', function(req, res) {
     let imageData = req.body;
     let fileName = req.get('fileName');
     let articleId = req.get('articleId');
-    saveImage(imageDir + articleId + '/' + fileName, imageData.data).then(() => res.send({ result: "OK"}));
+    sharp(Buffer.from(imageData.data.replace(/.*base64,/,""), "base64"))
+        .resize(1024).toBuffer()
+        .then(data => saveImage(imageDir + articleId + '/' + fileName, data).then(() => res.send({ result: "OK"})))
+    ;
 });
 
 router.post('/deleteImage', function (req, res) {
@@ -72,7 +76,7 @@ async function saveImage(file, data) {
         Key: file,
         ContentType: 'image/jpeg',
         ACL: "public-read",
-        Body: Buffer.from(data.replace(/.*base64,/,""), "base64")
+        Body: data
     };
 
     await s3.upload (uploadParams, function (err, data) {

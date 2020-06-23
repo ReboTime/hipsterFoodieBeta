@@ -57,7 +57,8 @@ export default function BlogPostEditor() {
         articleData.location,
         articleData.googlePlaceId,
         articleData.img,
-        articleData.desc
+        articleData.desc,
+        articleData.id
     ])
 
     const checkUrl = url => {
@@ -87,12 +88,11 @@ export default function BlogPostEditor() {
             .replace(/\s+/g, "-");
         let newData = articleData;
         newData.url = checkUrl(url.toLowerCase());
-        setArticleData(newData);
         const opt = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' , session: Cookies.get('hfbSession') },
             crossDomain: true,
-            body: JSON.stringify(articleData)
+            body: JSON.stringify(newData)
         }
         fetch(apiHost + '/article', opt)
             .then(res => res.json())
@@ -101,7 +101,10 @@ export default function BlogPostEditor() {
                 if (articleData.id === 0) {
                     setArticleData(data.articles[data.articles.length - 1]);
                 } else {
-                    setArticleData(data.articles.filter(a => a.id === articleData.id)[0]);
+                    let article = data.articles.filter(a => a.id === articleData.id)[0];
+                    if (article !== undefined && article !== articleData) {
+                        setArticleData(article);
+                    }
                 }
             });
     }
@@ -116,10 +119,10 @@ export default function BlogPostEditor() {
     }
 
     const changeArticle = (event, value) => {
+        if (value === null) return;
         let article =  value;
         if (typeof value === 'string') {
             article = {...newPost, title: value, id: articles.length + 1};
-            setArticles([...articles, article]);
         }
         setArticleData(article);
         initDescEditor(article.desc);
