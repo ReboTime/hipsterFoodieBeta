@@ -72,14 +72,16 @@ export default function Blog() {
 		setSnackOpen(!snackOpen);
 	}
 
-	const scrollListener = () => {
-		console.log(window.pageYOffset, goUpRef.current);
+	const scrollListenerGoUp = () => {
 		if (window.pageYOffset > 160 && !goUpRef.current) {
 			setGoUp(true);
 		}
 		if (window.pageYOffset <= 160 && goUpRef.current) {
 			setGoUp(false);
 		}
+	}
+
+	const scrollListenerInfinite = () => {
 		if (isLoadingMoreRef.current) {
 			console.log("still loading");
 			return;
@@ -93,8 +95,7 @@ export default function Blog() {
 			if (hasMoreRef.current) {
 				setIsLoadingMore(true);
 			} else {
-				console.log("remove listener");
-				window.removeEventListener('scroll', scrollListener);
+				window.removeEventListener('scroll', scrollListenerInfinite);
 			}
 		}
 	}
@@ -122,9 +123,11 @@ export default function Blog() {
 					setAllArticles(filteredArticles);
 				}
 			);
-		window.addEventListener('scroll', scrollListener);
+		window.addEventListener('scroll', scrollListenerInfinite);
+		window.addEventListener('scroll', scrollListenerGoUp);
 		return () => {
-			window.removeEventListener('scroll', scrollListener);
+			window.removeEventListener('scroll', scrollListenerInfinite);
+			window.removeEventListener('scroll', scrollListenerGoUp);
 		}
 	}, []);
 
