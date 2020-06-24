@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Grid, IconButton, Typography } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
@@ -6,24 +6,49 @@ import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
 import SearchBlog from './blogComponents/SearchBlog';
 import CloseIcon from '@material-ui/icons/Close';
 import { useTheme } from '@material-ui/core/styles';
-import InfiniteScroll from './blogComponents/InfiniteScroll';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ScrollToTop from 'react-scroll-up';
 import NavigationIcon from '@material-ui/icons/Navigation';
 
 export default function Blog() {
 	const theme = useTheme();
 
-	const [isLoaded, setIsLoaded] = useState(false);
+	const loadArticlesNumber = 5;
+	const threshold = 100;
+	const [goUp, _setGoUp] = useState(false);
+	const goUpRef = useRef(goUp);
+	const setGoUp = data => {
+		goUpRef.current = data;
+		_setGoUp(data);
+	}
+	const [isLoadingMore, _setIsLoadingMore] = useState(false);
+	const isLoadingMoreRef = useRef(isLoadingMore);
+	const setIsLoadingMore = data => {
+		isLoadingMoreRef.current = data;
+		_setIsLoadingMore(data);
+	}
 	const [allArticles, setAllArticles] = useState([]);
 	const [articles, setArticles] = useState([]);
 	const [displayedArticles, setDisplayedArticles] = useState([]);
 	const [lastIndex, setLastIndex] = useState(0);
-	const [hasMore, setHasMore] = useState(true);
+	const [hasMore, _setHasMore] = useState(true);
+	const hasMoreRef = useRef(hasMore);
+	const setHasMore = data => {
+		hasMoreRef.current = data;
+		_setHasMore(data);
+	}
 	const [searchInput, setSearchInput] = useState('');
 	const [snackOpen, setSnackOpen] = useState(false);
 
-	function handleSearchInputChange(value) {
+	const containsValue = (article, value) => {
+		return (
+			article.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+			article.desc.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+			article.tldr.toLowerCase().indexOf(value.toLowerCase()) !== -1
+		);
+	}
+
+	const handleSearchInputChange = value => {
+		console.log("input search handle")
 		if (value.length > 3) {
 			let searchArticles = allArticles.filter(
 				(article) => article.published && containsValue(article, value),
@@ -31,10 +56,8 @@ export default function Blog() {
 			setArticles(searchArticles);
 			let displayArticles = [...searchArticles];
 			setDisplayedArticles(
-				displayArticles.splice(0, searchArticles.length > 5 ? 5 : searchArticles.length),
+				displayArticles.splice(0, searchArticles.length > loadArticlesNumber ? loadArticlesNumber : searchArticles.length),
 			);
-			setLastIndex(0);
-			setHasMore(searchArticles.length > 5);
 		} else {
 			if (value.length === 0 || value.length === 3) {
 				setArticles(allArticles);
@@ -45,16 +68,35 @@ export default function Blog() {
 		setSearchInput(value);
 	}
 
-	function containsValue(article, value) {
-		return (
-			article.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-			article.desc.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-			article.tldr.toLowerCase().indexOf(value.toLowerCase()) !== -1
-		);
+	const toggleSnackbar = () => {
+		setSnackOpen(!snackOpen);
 	}
 
-	function toggleSnackbar() {
-		setSnackOpen(!snackOpen);
+	const scrollListener = () => {
+		console.log(window.pageYOffset, goUpRef.current);
+		if (window.pageYOffset > 160 && !goUpRef.current) {
+			setGoUp(true);
+		}
+		if (window.pageYOffset <= 160 && goUpRef.current) {
+			setGoUp(false);
+		}
+		if (isLoadingMoreRef.current) {
+			console.log("still loading");
+			return;
+		}
+		let body = document.body,
+			html = document.documentElement;
+		let height = Math.max( body.scrollHeight, body.offsetHeight,
+			html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+		if (window.pageYOffset + threshold + window.outerHeight > height) {
+			if (hasMoreRef.current) {
+				setIsLoadingMore(true);
+			} else {
+				console.log("remove listener");
+				window.removeEventListener('scroll', scrollListener);
+			}
+		}
 	}
 
 	// Note: the empty deps array [] means
@@ -68,34 +110,44 @@ export default function Blog() {
 					const filteredArticles = result.articles
 						.filter((article) => article.published)
 						.sort((a, b) => b.date.localeCompare(a.date));
-					if (filteredArticles.length <= 5) {
+					if (filteredArticles.length <= loadArticlesNumber) {
 						setLastIndex(filteredArticles.length);
 						setDisplayedArticles(filteredArticles);
 						setHasMore(false);
 					} else {
-						setLastIndex(5);
-						setDisplayedArticles(filteredArticles.slice(0, 5));
+						setLastIndex(loadArticlesNumber);
+						setDisplayedArticles(filteredArticles.slice(0, loadArticlesNumber));
 					}
 					setArticles(filteredArticles);
 					setAllArticles(filteredArticles);
-					setIsLoaded(true);
 				}
-			).catch(() => setIsLoaded(true));
+			);
+		window.addEventListener('scroll', scrollListener);
+		return () => {
+			window.removeEventListener('scroll', scrollListener);
+		}
 	}, []);
 
-	function loadArticles() {
-		console.log('loading 5 more');
-		let index = lastIndex + 5;
-		if (index >= articles.length) {
-			index = articles.length;
-			setHasMore(false);
+	useEffect(() => {
+		if (!isLoadingMore) {
+			return;
 		}
-		setDisplayedArticles(articles.slice(0, index));
-		setLastIndex(index);
-	}
+		console.log('loading 5 more');
+		//setTimeout( () => {
+			let index = lastIndex + loadArticlesNumber;
+			console.log(articles.length);
+			if (index >= articles.length) {
+				index = articles.length;
+				setHasMore(false);
+			}
+			setDisplayedArticles(displayedArticles.concat(articles.slice(lastIndex, index)));
+			setLastIndex(index);
+			setIsLoadingMore(false);
+		//}, 1000);
+	}, [isLoadingMore]);
 
 	const searchTitle = (
-		<Grid item xs={12}>
+		<Grid item xs={12} md={9} lg={7}>
 			<Typography>
 				Search results for '{searchInput}'
 				<IconButton
@@ -120,32 +172,24 @@ export default function Blog() {
 							<Title />
 					</Grid>
 				</Grid>
-				{searchInput.length > 3 ? searchTitle : <div />}
-				<InfiniteScroll
-					threshold={1000}
-					initialLoad={isLoaded}
-					loadMore={loadArticles}
-					hasMore={hasMore}
-					useWindow={false}
-					loader={
-						<Grid item xs={12} key={0}>
-							<CircularProgress size='50px' thickness={1} />
+				{searchInput.length > 3 && searchTitle}
+				<Grid item container justify='center' xs={12} md={9} lg={7} spacing={3}>
+					{/*Load displayed articles*/}
+					{displayedArticles.map((article) =>
+						<Grid item xs={12} key={article.id}>
+							<BlogPost article={article} toggleSnackbar={toggleSnackbar} />
 						</Grid>
-					}>
-					{displayedArticles.map((article) => {
-						return (
-							<Grid item xs={12} md={9} lg={7} key={article.id}>
-								<BlogPost article={article} toggleSnackbar={toggleSnackbar} />
-							</Grid>
-						);
-					})}
-				</InfiniteScroll>
+					)}
+					{hasMore && <Grid item xs={12} md={9} lg={7} key={0} style={{ minHeight: 100 }}>
+						<CircularProgress size='50px' thickness={1} />
+					</Grid>}
+				</Grid>
 			</Grid>
-			<ScrollToTop showUnder={160} style={{zIndex: 5, bottom: 20, right: 28}}>
-				<IconButton>
+			{goUp && <IconButton
+						onClick={() => window.scrollTo(0, 0)}
+						style={{zIndex: 5, float: 'right', bottom: 20, position: 'sticky' }}>
 					<NavigationIcon />
-				</IconButton>
-			</ScrollToTop>
+				</IconButton>}
 			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
 		</div>
 	);

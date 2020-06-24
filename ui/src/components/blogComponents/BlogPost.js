@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import {
@@ -69,13 +69,13 @@ export default function BlogPost(props) {
 	const formattedUrl = window.location.origin + '/post/' + props.article.url;
 
 	// FORMAT DATE FOR DISPLAY
-	function formatDate() {
+	const formatDate = () => {
 		const date = new Date(props.article.date);
 		return `from ${date.toDateString()}`;
 	}
 
 	// FORMAT GOOGLE LINK FOR MAP BUTTON
-	function formatGoogleLink() {
+	const formatGoogleLink = () => {
 		return `https://www.google.com/maps/search/?api=1&query=${props.article.location}&query_place_id=${props.article.googlePlaceId}`;
 	}
 
@@ -111,7 +111,7 @@ export default function BlogPost(props) {
 						<div key={arrayIndex} data-src={link} />
 					))
 				) : (
-					<div data-src='https://www.bucurestiivechisinoi.ro/wp-content/uploads/2019/03/code-matrix.jpg' />
+					<div data-src='images/foodie.jpg' />
 				)}
 			</AwesomeSlider>
 			<CardContent className={classes.cardContent}>

@@ -34,7 +34,6 @@ let InfiniteScroll = function (_Component) {
 
     _this.scrollListener = _this.scrollListener.bind(_this);
     _this.eventListenerOptions = _this.eventListenerOptions.bind(_this);
-    _this.mousewheelListener = _this.mousewheelListener.bind(_this);
     return _this;
   }
 
@@ -59,7 +58,6 @@ let InfiniteScroll = function (_Component) {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this.detachScrollListener();
-      this.detachMousewheelListener();
     }
   }, {
     key: 'isPassiveSupported',
@@ -103,16 +101,6 @@ let InfiniteScroll = function (_Component) {
       this.defaultLoader = loader;
     }
   }, {
-    key: 'detachMousewheelListener',
-    value: function detachMousewheelListener() {
-      let scrollEl = window;
-      if (this.props.useWindow === false) {
-        scrollEl = this.scrollComponent.parentNode;
-      }
-
-      scrollEl.removeEventListener('mousewheel', this.mousewheelListener, this.options ? this.options : this.props.useCapture);
-    }
-  }, {
     key: 'detachScrollListener',
     value: function detachScrollListener() {
       let scrollEl = window;
@@ -121,7 +109,6 @@ let InfiniteScroll = function (_Component) {
       }
 
       scrollEl.removeEventListener('scroll', this.scrollListener, this.options ? this.options : this.props.useCapture);
-      scrollEl.removeEventListener('resize', this.scrollListener, this.options ? this.options : this.props.useCapture);
     }
   }, {
     key: 'getParentElement',
@@ -151,21 +138,12 @@ let InfiniteScroll = function (_Component) {
         scrollEl = parentElement;
       }
 
-      scrollEl.addEventListener('mousewheel', this.mousewheelListener, this.options ? this.options : this.props.useCapture);
+      //scrollEl.addEventListener('mousewheel', this.mousewheelListener, this.options ? this.options : this.props.useCapture);
       scrollEl.addEventListener('scroll', this.scrollListener, this.options ? this.options : this.props.useCapture);
-      scrollEl.addEventListener('resize', this.scrollListener, this.options ? this.options : this.props.useCapture);
+      // scrollEl.addEventListener('resize', this.scrollListener, this.options ? this.options : this.props.useCapture);
 
       if (this.props.initialLoad) {
         this.scrollListener();
-      }
-    }
-  }, {
-    key: 'mousewheelListener',
-    value: function mousewheelListener(e) {
-      // Prevents Chrome hangups
-      // See: https://stackoverflow.com/questions/47524205/random-high-content-download-time-in-chrome/47684257#47684257
-      if (e.deltaY === 1 && !this.isPassiveSupported()) {
-        e.preventDefault();
       }
     }
   }, {
@@ -209,7 +187,7 @@ let InfiniteScroll = function (_Component) {
         return 0;
       }
 
-      return this.calculateTopPosition(el) + (el.offsetHeight - scrollTop - window.innerHeight);
+      return this.calculateTopPosition(el) + (el.offsetHeight - scrollTop - document);
     }
   }, {
     key: 'calculateTopPosition',

@@ -217,7 +217,9 @@ export default function BlogPostEditor() {
                     rowsMax={5}
                     value={articleData.tldr}
                     onChange={event => {
-                        setArticleData({...articleData, tldr: event.currentTarget.value} );
+                        if (event.currentTarget.value.length < 140 || event.currentTarget.value.length < articleData.tldr.length) {
+                            setArticleData({...articleData, tldr: event.currentTarget.value} );
+                        }
                     }}
                     onBlur={updateArticle}
                     variant="outlined"

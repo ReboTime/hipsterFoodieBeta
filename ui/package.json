@@ -23,6 +23,7 @@
     "react-cool-img": "^1.2.0",
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.5",
+    "react-fps-stats": "^0.1.2",
     "react-google-places-autocomplete": "^2.0.7",
     "react-images-upload": "^1.2.8",
     "react-images-uploading": "^2.2.0",
