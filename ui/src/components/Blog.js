@@ -38,6 +38,7 @@ export default function Blog() {
 	}
 	const [searchInput, setSearchInput] = useState('');
 	const [snackOpen, setSnackOpen] = useState(false);
+	const [timeout, _setTimeout] = useState(0);
 
 	const containsValue = (article, value) => {
 		return (
@@ -48,24 +49,39 @@ export default function Blog() {
 	}
 
 	const handleSearchInputChange = value => {
-		console.log("input search handle")
-		if (value.length > 3) {
-			let searchArticles = allArticles.filter(
-				(article) => article.published && containsValue(article, value),
-			);
-			setArticles(searchArticles);
-			let displayArticles = [...searchArticles];
-			setDisplayedArticles(
-				displayArticles.splice(0, searchArticles.length > loadArticlesNumber ? loadArticlesNumber : searchArticles.length),
-			);
-		} else {
-			if (value.length === 0 || value.length === 3) {
-				setArticles(allArticles);
+			setSearchInput(value);
+			clearInterval(timeout);
+			let interval = setTimeout(() => {
+				if (value.length === 1 || value.length === 2) {
+					return;
+				}
+				console.log("input search handle")
+				let filteredArticles;
+				if (value.length > 3) {
+					filteredArticles = allArticles.filter(
+						(article) => article.published && containsValue(article, value),
+					);
+				} else {
+					filteredArticles = [...allArticles];
+				}
+				setArticles(filteredArticles);
 				setLastIndex(0);
-				setHasMore(true);
-			}
-		}
-		setSearchInput(value);
+				let index;
+				if (filteredArticles.length <= loadArticlesNumber) {
+					setHasMore(false);
+					window.removeEventListener('scroll', scrollListenerInfinite);
+					index = filteredArticles.length;
+				} else {
+					setHasMore(true);
+					index = loadArticlesNumber;
+					window.removeEventListener('scroll', scrollListenerInfinite);
+					window.addEventListener('scroll', scrollListenerInfinite);
+				}
+				setDisplayedArticles(
+					filteredArticles.splice(0, index)
+				);
+			}, 250);
+			_setTimeout(interval);
 	}
 
 	const toggleSnackbar = () => {
@@ -169,7 +185,7 @@ export default function Blog() {
 				searchInput={searchInput}
 				handleSearchInputChange={handleSearchInputChange}
 			/>
-			<Grid container spacing={4} align='center'>
+			<Grid container spacing={4} align='center' justify='center'>
 				<Grid item xs={12} container spacing={3} justify='center'>
 					<Grid item xs={12} md={9} lg={7}>
 							<Title />
