@@ -54,7 +54,11 @@ router.post('/addImage', function(req, res) {
     let fileName = req.get('fileName');
     let articleId = req.get('articleId');
     sharp(Buffer.from(imageData.data.replace(/.*base64,/,""), "base64"))
-        .resize(1024).toBuffer()
+        .resize(1024)
+        .jpeg({
+            quality: 70,
+        })
+        .toBuffer()
         .then(data => saveImage(imageDir + articleId + '/' + fileName, data).then(() => res.send({ result: "OK"})))
     ;
 });
