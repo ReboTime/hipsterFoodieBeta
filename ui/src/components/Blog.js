@@ -4,22 +4,16 @@ import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
 import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
 import SearchBlog from './blogComponents/SearchBlog';
-import CloseIcon from '@material-ui/icons/Close';
 import { useTheme } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import NavigationIcon from '@material-ui/icons/Navigation';
+import GoUpButton from "./blogComponents/GoUpButton";
 
 export default function Blog() {
 	const theme = useTheme();
 
 	const loadArticlesNumber = 5;
 	const threshold = 100;
-	const [goUp, _setGoUp] = useState(false);
-	const goUpRef = useRef(goUp);
-	const setGoUp = data => {
-		goUpRef.current = data;
-		_setGoUp(data);
-	}
+
 	const [isLoadingMore, _setIsLoadingMore] = useState(false);
 	const isLoadingMoreRef = useRef(isLoadingMore);
 	const setIsLoadingMore = data => {
@@ -36,9 +30,7 @@ export default function Blog() {
 		hasMoreRef.current = data;
 		_setHasMore(data);
 	}
-	const [searchInput, setSearchInput] = useState('');
 	const [snackOpen, setSnackOpen] = useState(false);
-	const [timeout, _setTimeout] = useState(0);
 
 	const containsValue = (article, value) => {
 		return (
@@ -49,13 +41,7 @@ export default function Blog() {
 	}
 
 	const handleSearchInputChange = value => {
-			setSearchInput(value);
-			clearInterval(timeout);
-			let interval = setTimeout(() => {
-				if (value.length === 1 || value.length === 2) {
-					return;
-				}
-				console.log("input search handle")
+				console.log("input search handle ", value)
 				let filteredArticles;
 				if (value.length > 3) {
 					filteredArticles = allArticles.filter(
@@ -80,21 +66,10 @@ export default function Blog() {
 				setDisplayedArticles(
 					filteredArticles.splice(0, index)
 				);
-			}, 250);
-			_setTimeout(interval);
 	}
 
 	const toggleSnackbar = () => {
 		setSnackOpen(!snackOpen);
-	}
-
-	const scrollListenerGoUp = () => {
-		if (window.pageYOffset > 160 && !goUpRef.current) {
-			setGoUp(true);
-		}
-		if (window.pageYOffset <= 160 && goUpRef.current) {
-			setGoUp(false);
-		}
 	}
 
 	const scrollListenerInfinite = () => {
@@ -140,10 +115,8 @@ export default function Blog() {
 				}
 			);
 		window.addEventListener('scroll', scrollListenerInfinite);
-		window.addEventListener('scroll', scrollListenerGoUp);
 		return () => {
 			window.removeEventListener('scroll', scrollListenerInfinite);
-			window.removeEventListener('scroll', scrollListenerGoUp);
 		}
 	}, []);
 
@@ -165,33 +138,15 @@ export default function Blog() {
 		//}, 1000);
 	}, [isLoadingMore]);
 
-	const searchTitle = (
-		<Grid item xs={12} md={9} lg={7}>
-			<Typography>
-				Search results for '{searchInput}'
-				<IconButton
-					onClick={() => {
-						handleSearchInputChange('');
-					}}>
-					<CloseIcon fontSize='small' />
-				</IconButton>
-			</Typography>
-		</Grid>
-	);
-
 	return (
 		<div style={theme.props.extraPadding}>
-			<SearchBlog
-				searchInput={searchInput}
-				handleSearchInputChange={handleSearchInputChange}
-			/>
 			<Grid container spacing={4} align='center' justify='center'>
 				<Grid item xs={12} container spacing={3} justify='center'>
 					<Grid item xs={12} md={9} lg={7}>
 							<Title />
 					</Grid>
 				</Grid>
-				{searchInput.length > 3 && searchTitle}
+				<SearchBlog handleSearchInputChange={handleSearchInputChange} />
 				<Grid item container justify='center' xs={12} md={9} lg={7} spacing={3}>
 					{/*Load displayed articles*/}
 					{displayedArticles.map((article) =>
@@ -204,11 +159,7 @@ export default function Blog() {
 					</Grid>}
 				</Grid>
 			</Grid>
-			{goUp && <IconButton
-						onClick={() => window.scrollTo(0, 0)}
-						style={{zIndex: 5, float: 'right', bottom: 20, position: 'sticky' }}>
-					<NavigationIcon />
-				</IconButton>}
+			<GoUpButton />
 			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
 		</div>
 	);

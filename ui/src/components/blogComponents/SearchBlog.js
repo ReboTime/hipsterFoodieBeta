@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import {
 	Modal,
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 		position: 'fixed',
 		top: '0',
 		right: '24px',
-		
+
 		'@media (min-width:600px)': {
 			padding: '0',
 			position: 'fixed',
@@ -50,29 +50,54 @@ export default function SearchBlog(props) {
 	const classes = useStyles();
 
 	const [searchOpen, setSearchOpen] = useState(false);
+	const [searchInput, setSearchInput] = useState(undefined);
+	const [timeout, _setTimeout] = useState(0);
 
 	function handleKeyDown(e) {
 		if (e.keyCode === 13) toggleDrawer();
+	}
+
+	const updateSearchInput = e => {
+		setSearchInput(e.currentTarget.value);
+	}
+
+	const clearSearchInput = () => {
+		setSearchInput('');
 	}
 
 	function toggleDrawer() {
 		setSearchOpen(!searchOpen);
 	}
 
-	if (!searchOpen) {
-		return (
-			<IconButton
+	useEffect(() => {
+		console.log("changed search input", searchInput)
+		if (searchInput === undefined) return;
+		clearInterval(timeout);
+		let interval = setTimeout(() => {
+			if (searchInput.length === 1 || searchInput.length === 2) {
+				return;
+			}
+			props.handleSearchInputChange(searchInput);
+		}, 250);
+		_setTimeout(interval);
+	}, [searchInput]);
+
+	return (
+		<Grid item xs={12} md={9} lg={7}>
+			{!searchOpen && <IconButton
 				variant='outlined'
 				onClick={toggleDrawer}
 				className={classes.fixInCorner}
 				color='primary'>
 				<SearchIcon fontSize='large' />
-			</IconButton>
-		);
-	}
-
-	return (
-		<div>
+			</IconButton>}
+			{searchInput !== undefined && searchInput.length > 3 && <Typography>
+				Search results for '{searchInput}'
+				<IconButton
+					onClick={clearSearchInput}>
+					<CloseIcon fontSize='small' />
+				</IconButton>
+			</Typography>}
 			<Modal open={searchOpen} onClose={() => setSearchOpen(!searchOpen)}>
 				<Slide in={searchOpen} timeout={700} direction={'down'}>
 					<Paper className={classes.searchPaper}>
@@ -92,18 +117,14 @@ export default function SearchBlog(props) {
 									size='small'
 									fullWidth={true}
 									autoFocus={true}
-									value={props.searchInput}
-									onChange={(e) => {
-										props.handleSearchInputChange(e.target.value);
-									}}
+									value={searchInput}
+									onChange={updateSearchInput}
 									onKeyDown={handleKeyDown}
 									InputProps={{
 										endAdornment: (
 											<InputAdornment position='end'>
 												<IconButton
-													onClick={() => {
-														props.handleSearchInputChange('');
-													}}>
+													onClick={clearSearchInput}>
 													<CloseIcon fontSize='small' />
 												</IconButton>
 											</InputAdornment>
@@ -116,6 +137,6 @@ export default function SearchBlog(props) {
 					</Paper>
 				</Slide>
 			</Modal>
-		</div>
+		</Grid>
 	);
 }
