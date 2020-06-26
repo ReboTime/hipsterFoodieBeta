@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import {
 	Modal,
@@ -52,6 +52,7 @@ export default function SearchBlog(props) {
 	const [searchOpen, setSearchOpen] = useState(false);
 	const [searchInput, setSearchInput] = useState(undefined);
 	const [timeout, _setTimeout] = useState(0);
+	const inputRef = useRef(null);
 
 	function handleKeyDown(e) {
 		if (e.keyCode === 13) toggleDrawer();
@@ -78,6 +79,7 @@ export default function SearchBlog(props) {
 				return;
 			}
 			props.handleSearchInputChange(searchInput);
+			inputRef.current.focus();
 		}, 250);
 		_setTimeout(interval);
 	}, [searchInput]);
@@ -112,6 +114,7 @@ export default function SearchBlog(props) {
 							</Grid>
 							<Grid item xs={10}>
 								<TextField
+									inputRef={inputRef}
 									label='Search for:'
 									variant='outlined'
 									size='small'
