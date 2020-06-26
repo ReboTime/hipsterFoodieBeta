@@ -79,7 +79,9 @@ export default function SearchBlog(props) {
 				return;
 			}
 			props.handleSearchInputChange(searchInput);
-			inputRef.current.focus();
+			if (inputRef.current !== null) {
+				inputRef.current.focus();
+			}
 		}, 250);
 		_setTimeout(interval);
 	}, [searchInput]);
