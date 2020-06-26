@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { Grid, IconButton, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
 import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
@@ -143,7 +143,7 @@ export default function Blog() {
 			<Grid container spacing={4} align='center' justify='center'>
 				<Grid item xs={12} container spacing={3} justify='center'>
 					<Grid item xs={12} md={9} lg={7}>
-							<Title />
+							<Title articles={articles}/>
 					</Grid>
 				</Grid>
 				<SearchBlog handleSearchInputChange={handleSearchInputChange} />

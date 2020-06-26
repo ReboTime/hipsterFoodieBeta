@@ -1,0 +1,14 @@
+@keyframes line-anim {
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes fillIt {
+	from {
+		fill: transparent;
+	}
+	to {
+		fill: #000000;
+	}
+}
