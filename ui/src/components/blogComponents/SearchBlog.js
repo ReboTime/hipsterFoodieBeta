@@ -16,8 +16,8 @@ import CloseIcon from '@material-ui/icons/Close';
 const useStyles = makeStyles((theme) => ({
 	fixInCorner: {
 		position: 'fixed',
-		top: '0',
-		right: '24px',
+		top: '10px',
+		right: '0',
 
 		'@media (min-width:600px)': {
 			padding: '0',
@@ -93,7 +93,7 @@ export default function SearchBlog(props) {
 				onClick={toggleDrawer}
 				className={classes.fixInCorner}
 				color='primary'>
-				<SearchIcon fontSize='large' />
+				<SearchIcon />
 			</IconButton>}
 			{searchInput !== undefined && searchInput.length > 3 && <Typography>
 				Search results for '{searchInput}'

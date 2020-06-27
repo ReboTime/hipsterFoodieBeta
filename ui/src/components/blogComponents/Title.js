@@ -17,8 +17,12 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 import { ReactComponent as TitleSvg } from './titleSvg.svg';
 import './Title.css';
 
+console.log(TitleSvg);
+
 const useStyles = makeStyles((theme) => ({
 	titleCard: {
+		paddingLeft: '20px',
+		paddingRight: '20px',
 		[theme.breakpoints.up('xs')]: {
 			paddingTop: '20px',
 			paddingBottom: '20px',
@@ -29,10 +33,12 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.up('xl')]: {
 			paddingTop: '60px',
 		},
-		textShadow: '0.5px 0.5px 0px #889b43',
+		marginTop: '20px',
 		marginBottom: '10px',
 	},
 	descriptionCard: {
+		paddingLeft: '20px',
+		paddingRight: '20px',
 		[theme.breakpoints.up('xs')]: {
 			paddingTop: '20px',
 			paddingBottom: '20px',
@@ -70,18 +76,20 @@ export default function Title(props) {
 
 	const svgRef = useRef(null);
 
-	useEffect(()=>{
-		console.log(svgRef);
-		console.log(svgRef.current.childNodes);
+	useEffect(() => {
 		const svg = svgRef.current.childNodes;
-		let offset = 0;
-		for (let i=0; i<svg.length; i++) {
-		  const lineLength = svg[i].getTotalLength();
-		  svg[i].setAttribute('style', `stroke-dasharray: ${lineLength}; stroke-dashoffset: ${lineLength}; animation: line-anim 4s ease forwards ${offset}s;`);
-		  offset += 1;
-		}
-		svgRef.current.setAttribute('style', `animation: fillIt 2s ease forwards ${offset+3}s;`)
-	},[]);
+		setTimeout(() => {
+			let offset = 0;
+			for (let i = 0; i < svg.length; i++) {
+				svg[i].setAttribute('style', `animation: line-anim 4s ease forwards ${offset}s;`);
+				offset += 0.2;
+			}
+			svgRef.current.setAttribute(
+				'style',
+				`animation: fillIt 2s ease forwards ${offset + 2}s;`,
+			);
+		}, 2500);
+	}, []);
 
 	function openModal(event) {
 		setModalContent(event.currentTarget.value);
@@ -144,9 +152,6 @@ export default function Title(props) {
 		<>
 			<Card variant='elevation' elevation={10} className={classes.titleCard}>
 				<TitleSvg ref={svgRef} />
-				<Typography variant='h3' color='initial' align='center' gutterBottom={true}>
-					Hipster Foodie Beta
-				</Typography>
 				<Typography variant='subtitle2' color='initial'>
 					Half webDev, half chef, 100% geek. You're welcome!
 				</Typography>
