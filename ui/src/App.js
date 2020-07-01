@@ -45,6 +45,11 @@ let theme = createMuiTheme({
 				},
 			},
 		},
+		MuiButton: {
+			root: {
+				textTransform: 'none',
+			}
+		},
 		MuiPaper: {
 			rounded: {
 				borderRadius: '4px',
@@ -82,7 +87,7 @@ theme = responsiveFontSizes(theme, { factor: 5 }); // only works on Typography h
 function App() {
 	return (
 		<Router>
-			<div>
+			<div style={{minHeight: '100vh', position: 'relative'}}>
 				<ThemeProvider theme={theme}>
 					<CssBaseline />
 					<Switch>

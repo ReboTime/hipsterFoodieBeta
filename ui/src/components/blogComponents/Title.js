@@ -3,10 +3,13 @@ import {
 	Button,
 	ButtonGroup,
 	Card,
+	CardContent,
+	CardMedia,
+	Grid,
 	IconButton,
 	Modal,
 	Typography,
-	CardMedia,
+	CardHeader,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -21,33 +24,27 @@ console.log(TitleSvg);
 
 const useStyles = makeStyles((theme) => ({
 	titleCard: {
-		paddingLeft: '20px',
-		paddingRight: '20px',
 		[theme.breakpoints.up('xs')]: {
-			paddingTop: '20px',
-			paddingBottom: '20px',
+			padding: '20px',
 		},
 		[theme.breakpoints.up('md')]: {
-			paddingTop: '40px',
+			padding: '40px 40px 20px',
 		},
 		[theme.breakpoints.up('xl')]: {
-			paddingTop: '60px',
+			padding: '60px 60px 30px',
 		},
 		marginTop: '20px',
 		marginBottom: '10px',
 	},
 	descriptionCard: {
-		paddingLeft: '20px',
-		paddingRight: '20px',
 		[theme.breakpoints.up('xs')]: {
-			paddingTop: '20px',
-			paddingBottom: '20px',
+			padding: '20px',
 		},
 		[theme.breakpoints.up('md')]: {
-			paddingBottom: '30px',
+			padding: '30px 40px 20px',
 		},
 		[theme.breakpoints.up('xl')]: {
-			paddingBottom: '50px',
+			padding: '50px 60px 20px',
 		},
 	},
 	modal: {
@@ -59,7 +56,10 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	modalCard: {
-		width: '90%',
+		width: '800px',
+		maxWidth: '90%',
+		paddingTop: '10px',
+		paddingBottom: '10px',
 		'&:focus': {
 			outline: 'none',
 		},
@@ -100,30 +100,54 @@ export default function Title(props) {
 			case 'about':
 				return (
 					<>
+						<CardHeader
+							title='<AboutTheHipster />'
+							subheader='...and some random information too'
+							titleTypographyProps={{ align: 'center' }}></CardHeader>
 						<CardMedia
-							image='images/bigPanSmallPic.jpg'
-							style={{ height: '300px' }}></CardMedia>
-						<Typography>some stuff about me</Typography>
+							component='img'
+							image='images/bigPanSmallPic2.jpg'
+							style={
+								smallWindow
+									? { width: '95%', height: 'auto' }
+									: { width: '70%', height: 'auto' }
+							}></CardMedia>
+						<CardContent>
+							<Typography variant='body2' align='center' align='justify'>
+								This is Valentin. To begin with I wanted to become an inventor, but
+								that never happened. Now I'm a chef.
+								<br />
+								And I'm a coder too. I like to combine my passions. So I coded this
+								blog you see here. Hope you enjoy my honest and unfiltered reviews.
+								<br />
+								<cite style={{ float: 'right' }}> - I love lamp.</cite>
+							</Typography>
+						</CardContent>
 					</>
 				);
 			case 'media':
 				return (
 					<>
-						<IconButton
-							href='https://www.facebook.com/Hipster-Foodie-Beta-102325544868819'
-							target='_blank'>
-							<FacebookIcon fontsize='large' />
-						</IconButton>
-						<IconButton
-							href='https://www.facebook.com/Hipster-Foodie-Beta-102325544868819'
-							target='_blank'>
-							<TwitterIcon fontsize='large' />
-						</IconButton>
-						<IconButton
-							href='https://www.facebook.com/Hipster-Foodie-Beta-102325544868819'
-							target='_blank'>
-							<InstagramIcon fontsize='large' />
-						</IconButton>
+						<Grid item container justify='center' alignItems='center'>
+							<Typography variant='h6'>Face my book:</Typography>
+							<IconButton
+								href='https://www.facebook.com/Hipster-Foodie-Beta-102325544868819'
+								target='_blank'>
+								<FacebookIcon fontsize='large' htmlColor='#3b5998' />
+							</IconButton>
+						</Grid>
+						<Grid item container justify='center' alignItems='center'>
+							<Typography variant='h6'>Read my tweets:</Typography>
+							<IconButton href='https://twitter.com/hfbblog' target='_blank'>
+								<TwitterIcon fontsize='large' htmlColor='#00acee' />
+							</IconButton>
+						</Grid>
+						<Grid item container justify='center' alignItems='center'>
+							<Typography variant='h6'>Watch my pics:</Typography>
+							<IconButton href='https://www.instagram.com/hfoodieb/' target='_blank'>
+								<InstagramIcon fontsize='large' htmlColor='#C13584' />
+							</IconButton>
+						</Grid>
 					</>
 				);
 			case 'article':
@@ -139,25 +163,25 @@ export default function Title(props) {
 
 	function getArticle() {
 		const articles = props.articles;
-		console.log(articles[Math.floor(Math.random() * articles.length)].url);
-		const url = `http://localhost:3000/post/${
+		const url = `http://https://hipster-foodie-beta.herokuapp.com/post/${
 			articles[Math.floor(Math.random() * articles.length)].url
 		}`;
-		// change to deployment link when ready
-		// const url =`http://https://hipster-foodie-beta.herokuapp.com/post/${articles[Math.floor(Math.random() * articles.length)].url}`;
 		window.open(url, '_blank');
 	}
+
+	const smallWindow = window.innerWidth < 600;
+	console.log(window.innerWidth);
 
 	return (
 		<>
 			<Card variant='elevation' elevation={10} className={classes.titleCard}>
 				<TitleSvg ref={svgRef} />
-				<Typography variant='subtitle2' color='initial'>
+				<Typography variant='subtitle2' color='initial' style={{ marginTop: '10px' }}>
 					Half webDev, half chef, 100% geek. You're welcome!
 				</Typography>
 			</Card>
 			<Card variant='elevation' elevation={10} className={classes.descriptionCard}>
-				<Typography variant='subtitle2' align='justify' gutterBottom='true'>
+				<Typography variant='subtitle2' align='justify' style={{ marginBottom: '20px' }}>
 					{description}
 				</Typography>
 				<ButtonGroup color='primary' aria-label='outlined primary button group'>
@@ -165,16 +189,23 @@ export default function Title(props) {
 						{'<About />'}
 					</Button>
 					<Button value='media' onClick={openModal}>
-						{'<SocialMedia />'}
+						{smallWindow ? '<Media />' : '<SocialMedia />'}
 					</Button>
 					<Button value='article' onClick={getArticle} target='_blank'>
-						{'<RandomArticle />'}
+						{smallWindow ? '<GoRandom />' : '<RandomArticle />'}
 					</Button>
 				</ButtonGroup>
 			</Card>
 			<Modal open={modalIsOpen} onClose={closeModal} className={classes.modal}>
 				<Card variant='elevation' elevation={10} className={classes.modalCard}>
-					{renderModal(modalContent)}
+					<Grid
+						container
+						direction='column'
+						justify='space-around'
+						alignItems='center'
+						spacing={4}>
+						{renderModal(modalContent)}
+					</Grid>
 				</Card>
 			</Modal>
 		</>

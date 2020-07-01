@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Title from './blogComponents/Title';
 import BlogPost from './blogComponents/BlogPost';
+import Footer from './blogComponents/Footer';
 import { Button, Grid, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar'
-
+import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
 
 const useStyles = makeStyles((theme) => ({
 	extraPadding: {
 		padding: theme.spacing(3),
+		paddingBottom: '30px'
 	},
 }));
 
@@ -28,33 +29,34 @@ export default function Article() {
 	useEffect(() => {
 		fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json')
 			.then((res) => res.json())
-			.then(
-				(result) => {
-					setArticle(result.articles.find((post) => post.url === url));
-				},
-			);
+			.then((result) => {
+				setArticle(result.articles.find((post) => post.url === url));
+			});
 	}, [url]);
 	let blogpost = article ? (
-		<BlogPost article={article} toggleSnackbar={toggleSnackbar}/>
+		<BlogPost article={article} toggleSnackbar={toggleSnackbar} />
 	) : (
 		<div>Article not found, check your link yo!</div>
 	);
 	return (
-		<div className={classes.extraPadding}>
-			<Grid container spacing={3} align='center'>
-				<Grid item xs={12}>
-					<Title />
-				</Grid>
-				<Grid item xs={12}>
-					{blogpost}
-				</Grid>
-				<Grid item xs={12}>
-					<Button variant='contained'>
-						<Link href='/'>GO HOME!</Link>
-					</Button>
+		<>
+			<Grid container direction='column' alignItems='center' className={classes.extraPadding}>
+				<Grid item xs={12} md={9} xl={7} container spacing={3} align='center'>
+					<Grid item xs={12}>
+						<Title />
+					</Grid>
+					<Grid item xs={12}>
+						{blogpost}
+					</Grid>
+					<Grid item xs={12}>
+						<Button variant='contained' color='secondary' style={{padding: '20px 0', width: '95%'}} href='/'>
+							Click me to visit the entire blog!
+						</Button>
+					</Grid>
 				</Grid>
 			</Grid>
 			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
-		</div>
+			<Footer style={{position: 'absolute'}}/>
+		</>
 	);
 }

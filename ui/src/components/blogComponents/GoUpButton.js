@@ -30,7 +30,7 @@ export default function GoUpButton() {
         <>
         {goUp && <IconButton
             onClick={() => window.scrollTo(0, 0)}
-            style={{zIndex: 5, float: 'right', bottom: 20, position: 'sticky' }}>
+            style={{zIndex: 5, right: 0, bottom: 20, position: 'fixed' }}>
             <NavigationIcon />
         </IconButton>}
         </>

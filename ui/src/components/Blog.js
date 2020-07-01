@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AppBar, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import BlogPost from './blogComponents/BlogPost';
 import Title from './blogComponents/Title';
+import Footer from './blogComponents/Footer';
 import CopyLinkSnackbar from './blogComponents/CopyLinkSnackbar';
 import SearchBlog from './blogComponents/SearchBlog';
 import { useTheme } from '@material-ui/core/styles';
@@ -138,7 +139,7 @@ export default function Blog() {
 
 	return (
 		<>
-			<Grid container spacing={4} align='center' justify='center'>
+			<Grid container spacing={4} align='center' justify='center' style={{paddingBottom: '30px'}}>
 				<Grid item xs={12} md={9} lg={7}>
 					<Title articles={articles} />
 				</Grid>
@@ -154,13 +155,12 @@ export default function Blog() {
 						<CircularProgress size='50px' thickness={1} />
 					</Grid>
 				)}
+				
 			</Grid>
+			<Footer />
 			<GoUpButton />
 			<CopyLinkSnackbar open={snackOpen} toggleSnackbar={toggleSnackbar} />
-			<AppBar
-				color='secondary'
-				style={{ position: 'relative', height: '30px', width: '100%', bottom: 0 }}
-			/>
+			
 		</>
 	);
 }
