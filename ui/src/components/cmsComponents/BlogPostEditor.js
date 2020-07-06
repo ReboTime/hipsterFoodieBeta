@@ -39,7 +39,7 @@ export default function BlogPostEditor() {
     const [editorState, setEditorState] = useState(EditorState.createEmpty);
 
     useEffect(() => {
-        fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json')
+        fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json?' + Date.now())
             .then(res => res.json())
             .then(data => {
                 setArticles(data.articles);
