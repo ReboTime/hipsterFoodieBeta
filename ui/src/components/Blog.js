@@ -96,7 +96,7 @@ export default function Blog() {
 	};
 
 	useEffect(() => {
-		fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json')
+		fetch('https://hipster-foodie-beta.s3.eu-west-1.amazonaws.com/articles.json?' + Date.now())
 			.then((res) => res.json())
 			.then((result) => {
 				const filteredArticles = result.articles
