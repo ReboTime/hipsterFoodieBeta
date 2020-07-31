@@ -163,7 +163,7 @@ export default function Title(props) {
 
 	function getArticle() {
 		const articles = props.articles;
-		const url = `ost/${
+		const url = `post/${
 			articles[Math.floor(Math.random() * articles.length)].url
 		}`;
 		window.open(url, '_blank');
