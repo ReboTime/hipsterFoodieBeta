@@ -5,7 +5,7 @@ let router = express.Router();
 global.sessionCookie = [];
 global.password = 'init';
 
-bcrypt.hash(ENV['CMS_PASS'], 10, function(err, hash) {
+bcrypt.hash(process.env.CMS_PASS, 10, function(err, hash) {
     global.password = hash;
 });
 router.post('/', function(req, res) {
